@@ -1,6 +1,6 @@
 (ns vasquez.core
-	(:require [clj-http.client :as client])
-	(:import [org.jsoup Jsoup]))
+  (:require [clj-http.client :as client])
+  (:import [org.jsoup Jsoup]))
 
 (defn get-html [url]
   (first (rest (last (client/get url)))))
