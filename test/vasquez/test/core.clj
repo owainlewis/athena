@@ -2,5 +2,6 @@
   (:use [vasquez.core])
   (:use [clojure.test]))
 
-(deftest replace-me ;; FIXME: write
-  (is false "No tests have been written."))
+(deftest uri
+  (is (= true (uri? "https://mysite.com")))
+  (is (= false (uri? "owainlewis.com"))))

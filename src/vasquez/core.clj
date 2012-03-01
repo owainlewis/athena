@@ -15,19 +15,25 @@
 (defn check-status [url]
   "Returns the HTTP status code of a url"
   (check-request url :status))
-
-(defn has-protocol? [url]
-  (or (.startsWith url "http://")
-      (.startsWith url "https://")))
-        
+     
 (defn status-ok? [url]
   (= 200 (check-status url)))
- 
+
+(defn not-found? [url]
+  (= 404 (check-status url)))
+
+(defn uri?
+  "Return true if a valid uri is given"
+  ([uri]
+   (not (nil? (re-find #"^(http|https|file)://.*" uri)))))
+
 (defn parse [html]
   (Jsoup/parse html))
 
 (defn get-url [url]
-  (.get (Jsoup/connect url)))
+  "Given a url, returns the html from that page"
+  (when (uri? url)
+    (.get (Jsoup/connect url))))
 
 (defn get-attr 
   "Returns the attr value of a node"
@@ -57,7 +63,7 @@
 
 (defn parse-full-url 
   [host, url]
-  (cond (has-protocol? url) url
+  (cond (uri? url) url
         (.startsWith url "/") (str host url)
         :else host))
 
@@ -68,3 +74,10 @@
       #(vector 
          (parse-full-url url %) 
          (check-status (parse-full-url url %))) links)))
+
+(defn valid-links [res]
+  "Extracts the valid urls from a result map"
+  (map first
+    (filter 
+      (fn [x]
+        (= 200 (second x))) res)))
