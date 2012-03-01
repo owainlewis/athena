@@ -4,6 +4,10 @@
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
 
+;; TODO
+;; Currently links are getting parsed multiple times. Partition links before parsing
+;; Handle exceptions better
+
 (defonce results (atom []))
 
 ;;; STATUS CHECKING
@@ -50,10 +54,11 @@
   (.select doc "img"))
 
 (defn get-page-hrefs [url]
-  "Collect all hrefs from a web page"
-  (map #(get-attr % "href") 
-    (get-links 
-      (get-url url))))
+  "Collect all distinct hrefs from a web page"
+  (distinct 
+	(map #(get-attr % "href") 
+      (get-links 
+        (get-url url)))))
 
 (defn get-img-src-values [url]
   "Collect all image src values from a web page"
@@ -82,3 +87,9 @@
     (filter 
       (fn [x]
         (not (= 200 (second x)))) res)))
+
+(defn find-broken-links [uri]
+  (let [results (broken-links (links->status uri))]
+    (if (empty? results)
+        (println "No broken links")
+        results)))
