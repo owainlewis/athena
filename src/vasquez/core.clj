@@ -29,7 +29,9 @@
 (defn uri?
   "Return true if a valid uri is given"
   ([uri]
-   (not (nil? (re-find #"^(http|https|file)://.*" uri)))))
+   (not 
+     (nil? 
+       (re-find #"^(http|https|file)://.*" uri)))))
 
 (defn parse [html]
   (Jsoup/parse html))
@@ -62,9 +64,10 @@
 
 (defn get-img-src-values [url]
   "Collect all image src values from a web page"
-  (map #(get-attr % "src") 
-    (get-images
-      (get-url url))))
+  (map 
+    #(get-attr % "src") 
+      (get-images
+        (get-url url))))
 
 (defn parse-full-url 
   [host, url]
