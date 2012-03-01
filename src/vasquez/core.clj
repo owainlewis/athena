@@ -4,7 +4,7 @@
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
 
-(defonce results [])
+(defonce results (atom []))
 
 ;;; STATUS CHECKING
 
@@ -30,10 +30,10 @@
 (defn parse [html]
   (Jsoup/parse html))
 
-(defn get-url [url]
+(defn get-url [uri-string]
   "Given a url, returns the html from that page"
-  (when (uri? url)
-    (.get (Jsoup/connect url))))
+  (when (uri? uri-string)
+    (.get (Jsoup/connect uri-string))))
 
 (defn get-attr 
   "Returns the attr value of a node"
@@ -75,9 +75,10 @@
          (parse-full-url url %) 
          (check-status (parse-full-url url %))) links)))
 
-(defn valid-links [res]
-  "Extracts the valid urls from a result map"
+(defn broken-links [res]
+  "Extracts broken links from a crawl map"
+  (println "Crawling for broken links...\n")
   (map first
     (filter 
       (fn [x]
-        (= 200 (second x))) res)))
+        (not (= 200 (second x)))) res)))

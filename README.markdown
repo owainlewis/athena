@@ -4,10 +4,12 @@ Vasquez is a web crawler written in Clojure. It can be used for grabbing data fr
 
 ## Usage
 
-FIXME: write
+    (use 'vasquez.core)
+
+Creating a map of all page links and status codes on a web page
+
+    (links->status "http://www.mysite.com")
 
 ## License
-
-Copyright (C) 2012 FIXME
 
 Distributed under the Eclipse Public License, the same as Clojure.
