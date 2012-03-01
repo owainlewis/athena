@@ -1,8 +1,8 @@
 (ns vasquez.core
   (:require [clj-http.client :as client])
-  (:import [org.jsoup Jsoup]
-           [org.jsoup.select Elements]
-           [org.jsoup.nodes Element Document]))
+  (:import  [org.jsoup Jsoup]
+            [org.jsoup.select Elements]
+            [org.jsoup.nodes Element Document]))
 
 (defonce results [])
 
@@ -19,17 +19,10 @@
 (defn has-protocol? [url]
   (or (.startsWith url "http://")
       (.startsWith url "https://")))
-
-(defn parse-full-url 
-  "given a url, extract the full link path"
-  [url]
-  (condp ()))
-	
+        
 (defn status-ok? [url]
-  (if (.startsWith url "http://")
-    (= 200 (check-status url))
-    false))
-
+  (= 200 (check-status url)))
+ 
 (defn parse [html]
   (Jsoup/parse html))
 
@@ -62,7 +55,16 @@
     (get-images
       (get-url url))))
 
-(defn find-broken-links [url]
-  "Map reduce on page links > [status link]"
-  (let [links (get-page-hrefs url)]
-    (map #(vector (status-ok? %) %) links)))
+(defn parse-full-url 
+  [host, url]
+  (cond (has-protocol? url) url
+        (.startsWith url "/") (str host url)
+        :else host))
+
+(defn links->status [url]
+  "Maps every link on a page with a status code i.e [http://www.google.com 200]"
+  (let [links (get-page-hrefs url)] 
+    (map 
+      #(vector 
+         (parse-full-url url %) 
+         (check-status (parse-full-url url %))) links)))
