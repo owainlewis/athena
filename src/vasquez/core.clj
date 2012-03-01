@@ -56,7 +56,7 @@
 (defn get-page-hrefs [url]
   "Collect all distinct hrefs from a web page"
   (distinct 
-	(map #(get-attr % "href") 
+    (map #(get-attr % "href") 
       (get-links 
         (get-url url)))))
 
