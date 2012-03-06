@@ -11,7 +11,7 @@
 ;; Map reduce jobs on text. Count words on page, word frequency on a web page etc
 ;; Clean up the core file so that it's actually useful. More elegant code
 ;; Nice API for getting page elements
-;; 
+;; Rewrite program with tests
 
 (defonce results (atom []))
 
