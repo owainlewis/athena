@@ -68,7 +68,7 @@
     (.attr node attr))
   ([node attr attr-val]
     (.attr node attr attr-val)))
- 
+
 (defn get-links
   "Extract out all the links from a web page"
   [doc]
@@ -76,6 +76,12 @@
 
 (defn get-images [doc]
   (.select doc "img"))
+
+(defn get-head [doc]
+  (.select doc "head"))
+
+(defn get-meta [doc]
+  (.select doc "meta"))
 
 (defmacro parse-attr [attr url]
   `(map #(get-attr % ~attr)
