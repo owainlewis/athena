@@ -8,6 +8,11 @@
 ;; Currently links are getting parsed multiple times. Partition links before parsing
 ;; Handle exceptions better
 
+;; Map reduce jobs on text. Count words on page, word frequency on a web page etc
+;; Clean up the core file so that it's actually useful. More elegant code
+;; Nice API for getting page elements
+;; 
+
 (defonce results (atom []))
 
 ;;; STATUS CHECKING
@@ -58,13 +63,10 @@
 (defmacro parse-attr [attr url]
   `(map #(get-attr % ~attr)
      (get-links (get-url ~url))))
-	   
+  
 (defn get-page-hrefs [url]
   "Collect all distinct hrefs from a web page"
-  (distinct 
-    (map #(get-attr % "href") 
-      (get-links 
-        (get-url url)))))
+  (distinct (parse-attr "href" url)))
 
 (defn get-img-src-values [url]
   "Collect all image src values from a web page"

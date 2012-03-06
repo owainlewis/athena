@@ -1,7 +1,6 @@
 (ns scout.test.core
   (:use [scout.core])
+  (:use [midje.sweet])
   (:use [clojure.test]))
 
-(deftest uri
-  (is (= true (uri? "https://mysite.com")))
-  (is (= false (uri? "owainlewis.com"))))
+(fact (+ 1 1) => 2)
