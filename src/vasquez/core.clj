@@ -55,6 +55,10 @@
 (defn get-images [doc]
   (.select doc "img"))
 
+(defmacro parse-attr [attr url]
+  `(map #(get-attr % ~attr)
+     (get-links (get-url ~url))))
+	   
 (defn get-page-hrefs [url]
   "Collect all distinct hrefs from a web page"
   (distinct 
