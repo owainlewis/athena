@@ -17,12 +17,14 @@
 
 ;;; STATUS CHECKING
 
-(defn check-request [url, k]
+(defn check-request
   "Extracts a key from a HTTP response map"
+  [url, k]
   (get (client/get url) k))
 
-(defn check-status [url]
+(defn check-status
   "Returns the HTTP status code of a url"
+  [url]
   (check-request url :status))
      
 (defn status-ok? [url]
@@ -38,13 +40,27 @@
      (nil? 
        (re-find #"^(http|https|file)://.*" uri)))))
 
+(defn parse-full-url 
+  [host, url]
+  (cond (uri? url) url
+        (.startsWith url "/") (str host url)
+        :else host))
+
+;;; Parser
+
 (defn parse [html]
   (Jsoup/parse html))
 
-(defn get-url [uri-string]
+(defn get-url 
   "Given a url, returns the html from that page"
+  [uri-string]
   (when (uri? uri-string)
     (.get (Jsoup/connect uri-string))))
+
+(defmacro fetch 
+	"Fetch and download a webpage"
+	[page]
+  `(get-url ~page))
 
 (defn get-attr 
   "Returns the attr value of a node"
@@ -53,8 +69,9 @@
   ([node attr attr-val]
     (.attr node attr attr-val)))
  
-(defn get-links [doc]
+(defn get-links
   "Extract out all the links from a web page"
+  [doc]
   (.select doc "a"))
 
 (defn get-images [doc]
@@ -64,33 +81,31 @@
   `(map #(get-attr % ~attr)
      (get-links (get-url ~url))))
   
-(defn get-page-hrefs [url]
+(defn get-page-hrefs
   "Collect all distinct hrefs from a web page"
+  [url]
   (distinct (parse-attr "href" url)))
 
-(defn get-img-src-values [url]
+(defn get-img-src-values
   "Collect all image src values from a web page"
+  [url]
   (map 
     #(get-attr % "src") 
       (get-images
         (get-url url))))
 
-(defn parse-full-url 
-  [host, url]
-  (cond (uri? url) url
-        (.startsWith url "/") (str host url)
-        :else host))
-
-(defn links->status [url]
+(defn links->status
   "Maps every link on a page with a status code i.e [http://www.google.com 200]"
+  [url]
   (let [links (get-page-hrefs url)] 
     (map 
       #(vector 
          (parse-full-url url %) 
          (check-status (parse-full-url url %))) links)))
 
-(defn broken-links [res]
+(defn broken-links
   "Extracts broken links from a crawl map"
+  [res]
   (println "Crawling for broken links...\n")
   (map first
     (filter 
