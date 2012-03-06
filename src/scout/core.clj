@@ -58,8 +58,8 @@
     (.get (Jsoup/connect uri-string))))
 
 (defmacro fetch 
-	"Fetch and download a webpage"
-	[page]
+  "Fetch and download a webpage"
+  [page]
   `(get-url ~page))
 
 (defn get-attr 
