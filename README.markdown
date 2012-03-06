@@ -1,6 +1,6 @@
-# vasquez
+# Scout
 
-Vasquez is a web crawler written in Clojure. It can be used for grabbing data from web pages, parsing broken links and checking for page errors.
+Scout is a web crawler written in Clojure. It's used for mining interesting data from web pages.
 
 ## Usage
 

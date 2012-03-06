@@ -1,4 +1,4 @@
-(ns vasquez.reporter)
+(ns scout.report)
 
 ;; Reporter that logs the results of a website crawl to file
 

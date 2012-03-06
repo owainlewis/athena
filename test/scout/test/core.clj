@@ -1,5 +1,5 @@
-(ns vasquez.test.core
-  (:use [vasquez.core])
+(ns scout.test.core
+  (:use [scout.core])
   (:use [clojure.test]))
 
 (deftest uri

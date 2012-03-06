@@ -1,4 +1,4 @@
-(ns vasquez.core
+(ns scout.core
   (:require [clj-http.client :as client])
   (:import  [org.jsoup Jsoup]
             [org.jsoup.select Elements]
