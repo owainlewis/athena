@@ -19,7 +19,7 @@ Fetch all the links
     (fetch page "a")
 
 Fetch the head of a document
-
+(
     (fetch page "head")
 
 Fetch all the meta data on the page

@@ -1,5 +1,5 @@
 (ns scout.core
-  (:require [clj-http.client :as client])
+  (:require [clj-http.client :as client][scout.io :as io])
   (:import  [org.jsoup Jsoup]
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
@@ -21,7 +21,9 @@
       (if (uri? page)
         (.get (Jsoup/connect page))
         (throw (Exception. "Invalid URL")))))
-  (writer [page dest]))
+  (writer [page dest]
+    (let [output (str (reader page))]
+    (io/write-file dest output)))) 
 
 (defn response [url]
   ((juxt :status :body) (client/get url)))
