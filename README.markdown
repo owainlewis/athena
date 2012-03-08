@@ -8,11 +8,29 @@ Scout is a web crawler written in Clojure. It's used for mining interesting data
 
 Fetching a web page is easy
 
-    (fetch "http://www.google.com")
+    (get-url "http://www.google.com")
 
-Creating a map of all page links and status codes on a web page
+Once you have a web page it's easy to extract out elements from the page using fetch. I.e
 
-    (links->status "http://www.mysite.com")
+    (def page (get-url "http://www.owainlewis.com"))
+     
+Fetch all the links
+
+    (fetch page "a")
+
+Fetch the head of a document
+
+    (fetch page "head")
+
+Fetch all the meta data on the page
+
+    (fetch page "meta")
+
+## Selecting page text
+
+You may want to grab only the actual text from a web page for processing
+
+    (get-text "http://www.google.com")
 
 ## License
 

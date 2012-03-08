@@ -17,15 +17,11 @@
 
 ;;; STATUS CHECKING
 
-(defn check-request
-  "Extracts a key from a HTTP response map"
-  [url, k]
-  (get (client/get url) k))
-
 (defn check-status
   "Returns the HTTP status code of a url"
   [url]
-  (check-request url :status))
+  (let [request (client/get url)]
+    (get request :status)))
      
 (defn status-ok? [url]
   (= 200 (check-status url)))
@@ -57,10 +53,10 @@
   (when (uri? uri-string)
     (.get (Jsoup/connect uri-string))))
 
-(defmacro fetch 
-  "Fetch and download a webpage"
-  [page]
-  `(get-url ~page))
+(defn get-text
+	"Extract only the page text from a url"
+	[url]
+	(.text (get-url url)))
 
 (defn get-attr 
   "Returns the attr value of a node"
@@ -69,10 +65,16 @@
   ([node attr attr-val]
     (.attr node attr attr-val)))
 
+(defmacro fetch [doc el & forms]
+	`(if (> 0 (count ~forms))
+	  (map (fn [x] 
+		  (get-attr x (first ~@forms))
+		  (.select ~doc ~el)))))
+	      
 (defn get-links
   "Extract out all the links from a web page"
   [doc]
-  (.select doc "a"))
+  (fetch doc "a"))
 
 (defn get-images [doc]
   (.select doc "img"))
