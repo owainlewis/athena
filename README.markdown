@@ -8,11 +8,11 @@ Scout is a web crawler written in Clojure. It's used for mining interesting data
 
 Fetching a web page is easy
 
-    (get-url "http://www.google.com")
+    (reader "http://www.google.com")
 
 Once you have a web page it's easy to extract out elements from the page using fetch. I.e
 
-    (def page (get-url "http://www.owainlewis.com"))
+    (def page (reader "http://www.owainlewis.com"))
      
 Fetch all the links
 

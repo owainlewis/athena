@@ -17,7 +17,7 @@
 (extend-protocol WebParser
   Object
   (reader [page]
-    (letfn [(uri? [x] (not (nil? (re-find #"^(http|https|file)://.*" x))))]
+    (letfn [(uri? [x] (not (nil? (re-find #"^(http|https)://.*" x))))]
       (if (uri? page)
         (.get (Jsoup/connect page))
         (throw (Exception. "Invalid URL")))))
@@ -54,9 +54,9 @@
     (.get (Jsoup/connect uri-string))))
 
 (defn get-text
-	"Extract only the page text from a url"
-	[url]
-	(.text (get-url url)))
+  "Extract only the page text from a url"
+  [url]
+  (.text (get-url url)))
 
 (defn get-attr 
   "Returns the attr value of a node"
