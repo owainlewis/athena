@@ -6,8 +6,22 @@
 
 (defprotocol WebParser
   "Protocol for reading and writing web pages"
-  (reader [f])
-  (writer [f obj]))
+  (reader [page])
+  (writer [page dest]))
+
+(extend-protocol WebParser
+  java.io.File
+  (reader [page])
+  (writer [page dest]))
+
+(extend-protocol WebParser
+  Object
+  (reader [page]
+    (letfn [(uri? [x] (not (nil? (re-find #"^(http|https|file)://.*" x))))]
+      (if (uri? page)
+        (.get (Jsoup/connect page))
+        (throw (Exception. "Invalid URL")))))
+  (writer [page dest]))
 
 (defn response [url]
   ((juxt :status :body) (client/get url)))
@@ -23,9 +37,6 @@
 
 (defn not-found? [url]
   (= 404 (check-status url)))
-
-(defn uri? [uri]
-  (not (nil? (re-find #"^(http|https|file)://.*" uri))))
 
 (defn parse-full-url 
   [host, url]
