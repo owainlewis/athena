@@ -55,8 +55,8 @@
 
 (defn get-text
   "Extract only the page text from a url"
-  [url]
-  (.text (get-url url)))
+  [doc]
+  (.text doc))
 
 (defn get-attr 
   "Returns the attr value of a node"
@@ -87,8 +87,9 @@
   [url]
   (let [links (get-page-hrefs url)] 
     (map 
-      #(vector (parse-full-url url %) 
-               (check-status (parse-full-url url %))) links)))
+     #(vector
+       (parse-full-url url %) 
+       (check-status (parse-full-url url %))) links)))
 
 (defn broken-links
   "Extracts broken links from a crawl map"

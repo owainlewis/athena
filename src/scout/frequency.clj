@@ -13,5 +13,3 @@
 		   
 (defn combine [result]
   (apply concat result))
-
-
