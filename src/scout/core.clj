@@ -66,10 +66,10 @@
     (.attr node attr attr-val)))
 
 (defmacro fetch [doc el & forms]
-	`(if (> 0 (count ~forms))
-	  (map (fn [x] 
-		  (get-attr x (first ~@forms))
-		  (.select ~doc ~el)))))
+  `(if (> 0 (count ~forms))
+    (map (fn [x] 
+      (get-attr x (first ~@forms))
+      (.select ~doc ~el)))))
 	      
 (defn get-links
   "Extract out all the links from a web page"
