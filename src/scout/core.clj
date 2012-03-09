@@ -15,7 +15,7 @@
   (writer [page dest]))
 
 (extend-protocol WebParser
-  Object
+  String
   (reader [page]
     (letfn [(uri? [x] (not (nil? (re-find #"^(http|https)://.*" x))))]
       (if (uri? page)
@@ -42,8 +42,7 @@
 
 (defn parse-full-url 
   [host, url]
-  (cond (uri? url) url
-        (.startsWith url "/") (str host url)
+  (cond (.startsWith url "/") (str host url)
         :else host))
 
 (defn parse [html]
@@ -52,8 +51,7 @@
 (defn get-url 
   "Given a url, returns the html from that page"
   [uri-string]
-  (when (uri? uri-string)
-    (.get (Jsoup/connect uri-string))))
+  (.get (Jsoup/connect uri-string)))
 
 (defn get-text
   "Extract only the page text from a url"
