@@ -3,7 +3,7 @@
 
 ;; Tools for analysing word frequencies in text
 
-(defn parse-line
+(defn tokenize
   ""
   [line]
   (let [tokens (clojure.string/split (.toLowerCase line) #"\s+")]

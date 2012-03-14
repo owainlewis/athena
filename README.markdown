@@ -1,6 +1,6 @@
 # Scout
 
-Scout is a web crawler written in Clojure. It's used for mining interesting data from web pages.
+Scout is a web crawler written in Clojure. It's used for mining interesting data from web pages and for remote automated testing.
 
 ## Usage
 
@@ -19,7 +19,7 @@ Fetch all the links
     (fetch page "a")
 
 Fetch the head of a document
-(
+
     (fetch page "head")
 
 Fetch all the meta data on the page

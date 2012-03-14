@@ -25,6 +25,8 @@
     (let [output (str (reader page))]
     (io/write-file dest output)))) 
 
+;;; API 
+
 (defn response [url]
   ((juxt :status :body) (client/get url)))
 
@@ -39,6 +41,9 @@
 
 (defn not-found? [url]
   (= 404 (check-status url)))
+
+(defn uri? [url]
+  true)
 
 (defn parse-full-url 
   [host, url]
