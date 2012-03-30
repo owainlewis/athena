@@ -6,7 +6,7 @@
 
 (defprotocol WebParser
   "Protocol for reading and writing web pages"
-  (reader [page])
+  (get-page [page])
   (writer [page dest]))
 
 (extend-protocol WebParser
@@ -109,3 +109,10 @@
     (if (empty? results)
       (println "No broken links")
       results)))
+
+(defn url-test [file]
+	"Get a list of urls from a text file and parse each url
+	 checking the status returned. Will form the basis of more
+	 elaborate test case runs."
+	(let [urls (io/read-file file)]
+		(map #(vector (check-status %) %) urls)))

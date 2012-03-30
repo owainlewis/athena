@@ -1,6 +1,10 @@
 # Scout
 
-Scout is a web crawler written in Clojure. It's used for mining interesting data from web pages and for remote automated testing.
+Scout is a work in progress automated test tool written in Clojure.
+
+It's primary use is for crawling web pages and remote automated testing. 
+
+Ultimately, the aim of the library will be to make it really easy to test web pages for errors.
 
 ## Usage
 
@@ -26,6 +30,24 @@ Fetch all the meta data on the page
 
     (fetch page "meta")
 
+## Testing URLs
+
+You can easily test large numbers of URLs for errors by creating a text file with a list of urls
+
+create a new file called urls.txt
+
+    http://www.google.com
+	http://www.owainlewis.com
+	http://www.boxuk.com  
+	
+Then run a test to make sure every url is returning a 200 status
+
+    (url-test "urls.txt")
+
+This function returns a map of status code and url
+
+    ([200 "http://www.google.com"] [200 "http://www.owainlewis.com"] [200 "http://www.boxuk.com"])
+	
 ## Selecting page text
 
 You may want to grab only the actual text from a web page for processing

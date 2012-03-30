@@ -1,7 +1,7 @@
 (ns scout.frequency
   (:use [clojure.java.io :as io]))
 
-;; Tools for analysing word frequencies in text
+;; Tools for analysing word frequencies in text, map reduce jobs etc
 
 (defn tokenize
   ""

@@ -1,0 +1,17 @@
+Project Goals
+
+A complete automated test tool. I don't want to have to fallback to Ruby libraries to do automated test runs.
+
+Selenium Java wrapper (might push into a separate library with a nice DSL?)
+
+Basic functionality ideas
+
+1. Testing URLS
+
+- Check status codes
+- Parse a text file containing a list of URLs and check each one is returning the correct status
+
+(testcase [])
+
+
+
