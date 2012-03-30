@@ -6,7 +6,7 @@
 
 (defprotocol WebParser
   "Protocol for reading and writing web pages"
-  (get-page [page])
+  (reader [page])
   (writer [page dest]))
 
 (extend-protocol WebParser
@@ -47,8 +47,9 @@
 
 (defn parse-full-url 
   [host, url]
-  (cond (.startsWith url "/") (str host url)
-        :else host))
+  (if (.startsWith url "/") 
+    (str host url)
+    host))
 
 (defn parse [html]
   (Jsoup/parse html))
@@ -113,6 +114,12 @@
 (defn url-test [file]
   "Get a list of urls from a text file and parse each url
   checking the status returned. Will form the basis of more
-  elaborate test case runs." 
-  (let [urls (io/read-file file)]
-    (map #(vector (check-status %) %) urls)))
+  elaborate test case runs. Should use a regex to check the url and 
+  should also catch errors when running the tests. Will aim to produce
+  readable test results from this test and offer the option to export the test
+  results to a flat file." 
+  (let [urls (io/read-file file)
+        comment-string "#"]
+    (map #(vector % (check-status %))
+      (filter #(not (clojure.string/blank? %)) 
+        (map #(when-not (.startsWith % comment-string) %) urls)))))

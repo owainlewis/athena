@@ -34,7 +34,9 @@ Fetch all the meta data on the page
 
 You can easily test large numbers of URLs for errors by creating a text file with a list of urls
 
-create a new file called urls.txt
+create a new file called urls.txt. You can add comments by starting any line with a hash #
+
+    # My websites to test
 
     http://www.google.com
 	http://www.owainlewis.com
