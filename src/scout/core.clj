@@ -152,4 +152,12 @@
     (doseq [url urls]
       (if-not (or (clojure.string/blank? url)
                   (.startsWith url comment-string))
-       (prn (format "%s : %s" url (check-status url)))))))
+        (prn (format "%s : %s" url
+          (if (status-ok? url)
+            "pass"
+            (str "fail: " (check-status url)))))))))
+
+(defn -main [test-file & args]
+  "Main method callable through Lein.
+   Runs checks on a url file to make sure all urls are returning 200"
+  (url-test-run test-file))

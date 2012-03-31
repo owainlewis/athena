@@ -39,8 +39,8 @@ create a new file called urls.txt. You can add comments by starting any line wit
     # My websites to test
 
     http://www.google.com
-	http://www.owainlewis.com
-	http://www.boxuk.com  
+    http://www.owainlewis.com
+    http://www.boxuk.com  
 	
 Then run a test to make sure every url is returning a 200 status
 
@@ -50,6 +50,12 @@ This function returns a map of status code and url
 
     ([200 "http://www.google.com"] [200 "http://www.owainlewis.com"] [200 "http://www.boxuk.com"])
 	
+You can get easier to read output by running the test in the terminal. Assuming you have a list of urls in urls.txt run:
+
+    lein run "urls.txt"
+
+This will return test output to the terminal.
+
 ## Selecting page text
 
 You may want to grab only the actual text from a web page for processing
