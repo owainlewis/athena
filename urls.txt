@@ -1,7 +1,41 @@
-# Portfolio
+# BOXUK
 
-http://www.owainlewis.com
+# Link dump from homepage
 
-# Other websites
-
-http://www.boxuk.com
+"/"
+"/products-and-services/overview/"
+"http://www.boxuk.com/case-studies/"
+"/about-us/overview/"
+"/careers/overview/"
+"http://www.boxuk.com/news/"
+"http://www.boxuk.com/blog/"
+"/contact-us/contact"
+"/about-us/our-awards/"
+"/case-studies/s4c-clic/"
+"/case-studies/investec"
+"/case-studies/bcs/"
+"http://www.boxuk.com/products-and-services/"
+"http://www.boxuk.com/products-and-services/consultancy-services/"
+"http://www.boxuk.com/products-and-services/development/"
+"http://www.boxuk.com/products-and-services/content-management/"
+"http://www.boxuk.com/products-and-services/aftercare/"
+"http://www.boxuk.com/about-us/why-hire-us/"
+"http://www.boxuk.com/careers/overview/"
+"http://www.boxuk.com/news/box-uk-partners-with-chargify-to-take-the-pain-out-of-recurring-billing"
+"http://www.boxuk.com/news/amaxus-featured-in-highly-regarded-supplier-guide"
+"http://www.boxuk.com/news/box-uk-to-showcase-digital-solutions-at-tfma-exhibition"
+"mailto:info@boxuk.com"
+"http://www.boxuk.com/labs/"
+"http://www.boxuk.com/legal-notes/"
+"http://www.boxuk.com/sitemap/"
+"/rss/block/14"
+"/rss/block/176"
+"/rss/block/168"
+"http://twitter.com/statuses/user_timeline/17337067.rss"
+"http://www.twitter.com/boxuk"
+"http://www.linkedin.com/company/box-uk"
+""
+"#"
+"http://www.amaxus.com"
+"http://www.sgs.com"
+"http://www.boxuk.com/about-us/our-awards/"

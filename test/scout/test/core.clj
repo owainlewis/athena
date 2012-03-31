@@ -3,4 +3,7 @@
   (:use [midje.sweet])
   (:use [clojure.test]))
 
-(fact (+ 1 1) => 2)
+(facts "about url parsing"
+  (parse-full-url "www.owainlewis.com") => "http://www.owainlewis.com"
+  (parse-full-url "http://www.owainlewis.com") => "http://www.owainlewis.com"
+  (parse-full-url "/careers/overview/" "http://www.boxuk.com") => "http://www.boxuk.com/careers/overview/") 

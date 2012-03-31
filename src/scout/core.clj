@@ -31,33 +31,44 @@
   ((juxt :status :body) (client/get url)))
 
 (defn check-status
-  "Returns the HTTP status code of a url"
+  "Returns the HTTP status code of a url.
+   Will just return an error if an invalid url is given."
   [url]
-  (let [request (client/get url)]
-    (get request :status)))
+  (try
+    (let [request (client/get url)]
+      (get request :status))
+    (catch Exception e e)))
      
 (defn status-ok? [url]
+  "Returns true is a 200 status is returned"
   (= 200 (check-status url)))
 
 (defn not-found? [url]
   (= 404 (check-status url)))
 
-(defn uri? [url]
-  true)
+;; URL Processing functions
 
-(defn parse-full-url 
-  [host, url]
-  (if (.startsWith url "/") 
-    (str host url)
-    host))
-
-(defn parse [html]
-  (Jsoup/parse html))
+(defn parse-full-url
+  "Trys to convert a partial to a full url. This needs to be more robust
+   as we will need to deal with lots of strange url cases i.e params
+   strange extensions etc."
+  ([url]
+     (if (.startsWith url "www")
+       (str "http://" url)
+       url))
+  ([url host]
+  (let [protocol "http://"]
+  (cond (.startsWith url "/") (str host url)
+        (.startsWith url "www") (str protocol url)
+        :default host))))
 
 (defn get-url 
   "Given a url, returns the html from that page"
   [uri-string]
   (.get (Jsoup/connect uri-string)))
+
+(defn parse [html]
+  (Jsoup/parse html))
 
 (defn get-text
   "Extract only the page text from a url"
@@ -88,14 +99,24 @@
   [url]
   (distinct (parse-attr "href" url)))
 
-(defn links->status
-  "Maps every link on a page with a status code i.e [http://www.google.com 200]"
+(defn print-page-hrefs
+  "Utility method to print out a list of all the urls on a page"
   [url]
-  (let [links (get-page-hrefs url)] 
+  (doseq [x (get-page-hrefs url)]
+    (prn x)))
+
+(defn links->status
+  "Maps every link on a page with a status code i.e [http://www.google.com 200]
+   this will break if the url isn't the home page so convert any url to a base
+   path. We need to filter out duplicate entries as we don't want to waste time
+   checking the same url many times. Also need to append a trailing / to urls
+   to make sure we don't get protocol exceptions."
+  [url]
+  (let [links (filter distinct (get-page-hrefs url))]
     (map 
      #(vector
-       (parse-full-url url %) 
-       (check-status (parse-full-url url %))) links)))
+       (parse-full-url % url)
+       (check-status (parse-full-url % url))) links)))
 
 (defn broken-links
   "Extracts broken links from a crawl map"
@@ -122,4 +143,13 @@
         comment-string "#"]
     (map #(vector % (check-status %))
       (filter #(not (clojure.string/blank? %)) 
-        (map #(when-not (.startsWith % comment-string) %) urls)))))
+              (map #(when-not (.startsWith % comment-string) %) urls)))))
+
+(defn url-test-run [file]
+  "loop through and print output to the shell"
+  (let [urls (io/read-file file)
+        comment-string "#"]
+    (doseq [url urls]
+      (if-not (or (clojure.string/blank? url)
+                  (.startsWith url comment-string))
+       (prn (format "%s : %s" url (check-status url)))))))
