@@ -1,6 +1,6 @@
 (ns scout.core
   (:require [clj-http.client :as client])
-	(:use [scout.io :as io]
+  (:use [scout.io :as io]
         [scout.parser :as parser])
   (:import  [org.jsoup Jsoup]
             [org.jsoup.select Elements]
