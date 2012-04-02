@@ -9,12 +9,16 @@
   (boolean (re-find expr candidate)))
 
 (defn tokenize
-  ""
+  "Returns a sequence of word frequency vectors => [word count]"
   [line]
   (let [tokens (clojure.string/split (.toLowerCase line) #"\s+")]
     (apply concat
       (reduce (fn [a b]
         (update-in a [b] (fnil inc 0))) {} tokens))))
-		   
+
+(defn most-popular-word
+  ""
+  [text])
+		  
 (defn combine [result]
   (apply concat result))

@@ -67,7 +67,7 @@
 (defn get-url 
   "Given a url, returns the html from that page"
   [uri-string]
-  (.get (Jsoup/connect uri-string)))
+  (.get (Jsoup/connect (parse-full-url uri-string))))
 
 (defn parse [html]
   (Jsoup/parse html))
@@ -101,6 +101,11 @@
   [url]
   (distinct (parse-attr "href" url)))
 
+(defn count-all
+  "A functon that counts the number of elements on a page"
+  [page el]
+  (count (fetch page el)))
+
 (defn print-page-hrefs
   "Utility method to print out a list of all the urls on a page"
   [url]
@@ -122,11 +127,11 @@
 
 (defn broken-links
   "Extracts broken links from a crawl map"
-  [res]
+  [url]
   (println "Crawling for broken links...\n")
   (map first
     (filter 
-      (fn [x] (not (= 200 (second x)))) res)))
+      (fn [x] (not (= 200 (second x)))) (links->status url))))
 
 (defn find-broken-links [uri]
   (let [results (broken-links (links->status uri))]
@@ -135,10 +140,10 @@
       results)))
 
 (defn contains-text? [url text]
-	"Returns true if a url matches the text given"
-	(let [page (reader url)
-	      candidate (get-text page)]
-	  (parser/has-text? candidate text)))
+  "Returns true if a url matches the text given"
+  (let [page (reader url)
+        candidate (get-text page)]
+    (parser/has-text? candidate text)))
 
 (defn url-test [file]
   "Get a list of urls from a text file and parse each url
