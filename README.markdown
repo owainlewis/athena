@@ -1,6 +1,6 @@
 # Scout
 
-Scout is a work in progress automated test tool written in Clojure.
+Scout is an automated test tool for websites.
 
 It's primary use is for crawling web pages and remote automated testing. 
 
@@ -29,6 +29,15 @@ Fetch the head of a document
 Fetch all the meta data on the page
 
     (fetch page "meta")
+
+Fetch the title of a document
+
+    (fetch (get-url "http://www.owainlewis.com") "title")
+
+You can easily test to see if a regex matches on a web page. For example if we want to test if the url owainlewis.com 
+contains the word 'Clojure' we could do so like this.
+
+    (contains-text? "http://www.owainlewis.com" #"Clojure")
 
 ## Testing URLs
 
@@ -60,7 +69,7 @@ This will return test output to the terminal.
 
 You may want to grab only the actual text from a web page for processing
 
-    (get-text "http://www.google.com")
+    (get-text (get-url "http://www.google.com"))
 
 ## License
 

@@ -1,7 +1,12 @@
-(ns scout.frequency
+(ns scout.parser
   (:use [clojure.java.io :as io]))
 
-;; Tools for analysing word frequencies in text, map reduce jobs etc
+;; Tools for analysing text
+
+(defn has-text?
+	"Returns true if a expr reg ex matches on candidate text"
+	[candidate expr]
+	(boolean (re-find expr candidate)))
 
 (defn tokenize
   ""

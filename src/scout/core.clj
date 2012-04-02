@@ -1,5 +1,7 @@
 (ns scout.core
-  (:require [clj-http.client :as client][scout.io :as io])
+  (:require [clj-http.client :as client])
+	(:use [scout.io :as io]
+        [scout.parser :as parser])
   (:import  [org.jsoup Jsoup]
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
@@ -131,6 +133,12 @@
     (if (empty? results)
       (println "No broken links")
       results)))
+
+(defn contains-text? [url text]
+	"Returns true if a url matches the text given"
+	(let [page (reader url)
+	      candidate (get-text page)]
+	  (parser/has-text? candidate text)))
 
 (defn url-test [file]
   "Get a list of urls from a text file and parse each url
