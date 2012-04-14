@@ -8,36 +8,51 @@ Ultimately, the aim of the library will be to make it really easy to test web pa
 
 ## Usage
 
-    (use 'scout.core)
+```clojure
+(use 'scout.core)
+```
 
 Fetching a web page is easy
 
-    (reader "http://www.google.com")
+```clojure
+(reader "http://www.google.com")
+```
 
 Once you have a web page it's easy to extract out elements from the page using fetch. I.e
 
-    (def page (reader "http://www.owainlewis.com"))
-     
+```clojure
+(def page (reader "http://www.owainlewis.com"))
+```
+
 Fetch all the links
 
-    (fetch page "a")
+```clojure
+(fetch page "a")
+```
 
 Fetch the head of a document
 
-    (fetch page "head")
+```clojure
+(fetch page "head")
+```
+Fetch all the meta data on the 
 
-Fetch all the meta data on the page
-
-    (fetch page "meta")
+```clojure
+(fetch page "meta")
+```
 
 Fetch the title of a document
 
-    (fetch (get-url "http://www.owainlewis.com") "title")
+```clojure
+(fetch (get-url "http://www.owainlewis.com") "title")
+```
 
 You can easily test to see if a regex matches on a web page. For example if we want to test if the url owainlewis.com 
 contains the word 'Clojure' we could do so like this.
 
-    (contains-text? "http://www.owainlewis.com" #"Clojure")
+```clojure 
+(contains-text? "http://www.owainlewis.com" #"Clojure")
+```
 
 ## Testing URLs
 
@@ -53,15 +68,21 @@ create a new file called urls.txt. You can add comments by starting any line wit
 	
 Then run a test to make sure every url is returning a 200 status
 
-    (url-test "urls.txt")
+```clojure
+(url-test "urls.txt")
+```
 
 This function returns a map of status code and url
 
-    ([200 "http://www.google.com"] [200 "http://www.owainlewis.com"] [200 "http://www.boxuk.com"])
-	
+```clojure
+([200 "http://www.google.com"] [200 "http://www.owainlewis.com"] [200 "http://www.boxuk.com"])
+```
+
 You can get easier to read output by running the test in the terminal. Assuming you have a list of urls in urls.txt run:
 
-    lein run "urls.txt"
+```clojure
+lein run "urls.txt"
+```
 
 This will return test output to the terminal.
 
@@ -69,7 +90,9 @@ This will return test output to the terminal.
 
 You may want to grab only the actual text from a web page for processing
 
-    (get-text (get-url "http://www.google.com"))
+```clojure
+(get-text (get-url "http://www.google.com"))
+```
 
 ## License
 
