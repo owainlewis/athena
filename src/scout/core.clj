@@ -6,6 +6,8 @@
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
 
+(def visited-links (atom {}))
+
 (defprotocol WebParser
   "Protocol for reading and writing web pages"
   (reader [page])
@@ -159,7 +161,7 @@
               (map #(when-not (.startsWith % comment-string) %) urls)))))
 
 (defn url-test-run [file]
-  "loop through and print output to the shell"
+  "loop through and print output to shell"
   (let [urls (io/read-file file)
         comment-string "#"]
     (doseq [url urls]
