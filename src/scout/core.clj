@@ -5,6 +5,8 @@
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
 
+;; We will store visited links in a cache
+
 (def visited-links (atom {}))
 
 (defprotocol WebParser
@@ -35,7 +37,7 @@
 
 (defn check-status
   "Returns the HTTP status code of a url.
-   Will just return an error if an invalid url is given."
+   Will return the error if an invalid url is given."
   [url]
   (try
     (let [request (client/get url)]
@@ -154,16 +156,19 @@
               (map #(when-not (.startsWith % comment-string) %) urls)))))
 
 (defn url-test-run [file]
-  "loop through and print output to shell"
+  "A utility function that lets QA people quickly test web
+   page status results from a text file of URLs"
   (let [urls (io/read-file file)
-        comment-string "#"]
+        comment-string "#"
+        results {}]
     (doseq [url urls]
       (if-not (or (clojure.string/blank? url)
                   (.startsWith url comment-string))
-        (prn (format "%s : %s" url
-          (if (status-ok? url)
-            "pass"
-            (str "fail: " (check-status url)))))))))
+        (let [status (check-status url)]
+          (prn (format "%s : %s" url
+            (if (= 200 status)
+               "pass with status 200"
+               (str "fail: " status)))))))))
 
 (defn -main [test-file & args]
   "Main method callable through Lein.

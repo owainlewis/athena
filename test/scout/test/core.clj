@@ -7,3 +7,6 @@
   (parse-full-url "www.owainlewis.com") => "http://www.owainlewis.com"
   (parse-full-url "http://www.owainlewis.com") => "http://www.owainlewis.com"
   (parse-full-url "/careers/overview/" "http://www.boxuk.com") => "http://www.boxuk.com/careers/overview/") 
+
+(facts "about boxuk"
+  (check-status "http://www.boxuk.com ") => 200)

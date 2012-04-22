@@ -13,4 +13,3 @@
     (write-file [text dest]
       (with-open [w (clojure.java.io/writer dest)]
         (.write w text))))
-
