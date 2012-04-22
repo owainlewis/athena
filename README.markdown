@@ -1,10 +1,10 @@
 # Scout
 
-Scout is an automated test tool for websites.
+Scout is an easy tool for mining data from web pages.
 
 It's primary use is for crawling web pages and remote automated testing. 
 
-Ultimately, the aim of the library will be to make it really easy to test web pages for errors.
+Ultimately, the aim of the library will be to make it really easy to quickly crawl and analyse web pages.
 
 ## Usage
 
@@ -45,13 +45,6 @@ Fetch the title of a document
 
 ```clojure
 (fetch (get-url "http://www.owainlewis.com") "title")
-```
-
-You can easily test to see if a regex matches on a web page. For example if we want to test if the url owainlewis.com 
-contains the word 'Clojure' we could do so like this.
-
-```clojure 
-(contains-text? "http://www.owainlewis.com" #"Clojure")
 ```
 
 ## Testing URLs
