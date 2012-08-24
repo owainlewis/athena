@@ -5,8 +5,6 @@
             [org.jsoup.select Elements]
             [org.jsoup.nodes Element Document]))
 
-;; We will store visited links in a cache
-
 (def visited-links (atom {}))
 
 (defprotocol WebParser
@@ -32,10 +30,10 @@
 
 ;;; API 
 
-(defn response [url]
+(defn- response [url]
   ((juxt :status :body) (client/get url)))
 
-(defn check-status
+(defn- check-status
   "Returns the HTTP status code of a url.
    Will return the error if an invalid url is given."
   [url]
@@ -43,13 +41,16 @@
     (let [request (client/get url)]
       (get request :status))
     (catch Exception e e)))
-     
-(defn status-ok? [url]
-  "Returns true is a 200 status is returned"
-  (= 200 (check-status url)))
 
-(defn not-found? [url]
-  (= 404 (check-status url)))
+(defn- status-> [s url]
+  (= s (check-status url)))
+
+(def status-ok? (fn [url]
+  "Returns true is a 200 status is returned"
+  (status-> 200 url)))
+
+(def not-found? (fn [url]
+  (status-> 404 url)))
 
 ;; URL Processing functions
 
@@ -141,36 +142,3 @@
     (if (empty? results)
       (println "No broken links")
       results)))
-
-(defn url-test [file]
-  "Get a list of urls from a text file and parse each url
-  checking the status returned. Will form the basis of more
-  elaborate test case runs. Should use a regex to check the url and 
-  should also catch errors when running the tests. Will aim to produce
-  readable test results from this test and offer the option to export the test
-  results to a flat file." 
-  (let [urls (io/read-file file)
-        comment-string "#"]
-    (map #(vector % (check-status %))
-      (filter #(not (clojure.string/blank? %)) 
-              (map #(when-not (.startsWith % comment-string) %) urls)))))
-
-(defn url-test-run [file]
-  "A utility function that lets QA people quickly test web
-   page status results from a text file of URLs"
-  (let [urls (io/read-file file)
-        comment-string "#"
-        results {}]
-    (doseq [url urls]
-      (if-not (or (clojure.string/blank? url)
-                  (.startsWith url comment-string))
-        (let [status (check-status url)]
-          (prn (format "%s : %s" url
-            (if (= 200 status)
-               "pass with status 200"
-               (str "fail: " status)))))))))
-
-(defn -main [test-file & args]
-  "Main method callable through Lein.
-   Runs checks on a url file to make sure all urls are returning 200"
-  (url-test-run test-file))
