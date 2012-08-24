@@ -14,23 +14,26 @@ Fetching a web page is easy
 (reader "http://www.google.com")
 ```
 
-Once you have a web page it's easy to extract out elements from the page using fetch. I.e
+Once you have a web page it's easy to extract out elements from the page using fetch. 
+
+Lets first define a page.
 
 ```clojure
-(def page (reader "http://www.owainlewis.com"))
+(defonce page (reader "http://www.owainlewis.com"))
 ```
 
-Fetch all the links
+Now we can fetch all the links
 
 ```clojure
 (fetch page "a")
 ```
 
-Fetch the head of a document
+We can fetch the head of a document
 
 ```clojure
 (fetch page "head")
 ```
+
 Fetch all the meta data on the 
 
 ```clojure
