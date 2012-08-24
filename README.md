@@ -51,6 +51,24 @@ You may want to grab only the actual text from a web page for processing
 (get-text (get-url "http://www.google.com"))
 ```
 
+## Demos
+
+Let's try and pull out a sequence of words from a wikipedia article and remove any words less than 4 chars in length
+
+```clojure
+(defn words->seq
+  "Pull out a map of unique words from the web page body text (useful for parsing articles)"
+  [url]
+  (let [text (body-text url)
+        tokens (clojure.string/split text #"\W+")]
+    (->> tokens
+         (map #(.toLowerCase %))
+         (filter #(< 4 (count %))))))
+
+(words->seq "http://en.wikipedia.org/wiki/Levenshtein_distance")
+
+```
+
 ## License
 
 Distributed under the Eclipse Public License, the same as Clojure.
