@@ -34,7 +34,7 @@ We can fetch the head of a document
 (fetch page "head")
 ```
 
-Fetch all the meta data on the 
+Fetch all the meta data
 
 ```clojure
 (fetch page "meta")
