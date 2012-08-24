@@ -1,8 +1,6 @@
 # Scout
 
-Scout is an easy tool for mining data from web pages.
-
-Ultimately, the aim of the library will be to make it really easy to quickly crawl and analyse web pages.
+A tool for mining data from web pages.
 
 ## Usage
 
