@@ -12,13 +12,15 @@
 (defn enqueue-link
   "Add a link to the queue"
   [link]
-  (dosync (alter link-queue conj link)))
+  (dosync
+    (alter link-queue conj link)))
 
 (defn pop-link [queue]
   (dosync 
     (let [item (peek @queue)]
       (alter queue pop)
-        item)))
+        item ;; Return the item
+      )))
 
 ;; GET URL
 
