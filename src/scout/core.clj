@@ -1,11 +1,38 @@
 (ns scout.core
   (:require [clj-http.client :as client])
   (:use [scout.io :as io])
-  (:import  [org.jsoup Jsoup]
-            [org.jsoup.select Elements]
-            [org.jsoup.nodes Element Document]))
+  (:import [org.jsoup Jsoup]
+           [org.jsoup.select Elements]
+           [org.jsoup.nodes Element Document]))
 
-(def visited-links (atom {}))
+;; A queue for storing links to crawl
+
+(def link-queue (ref clojure.lang.PersistentQueue/EMPTY))
+
+(defn enqueue-link
+  "Add a link to the queue"
+  [link]
+  (dosync (alter pq conj link)))
+
+(defn pop-link [queue-ref]
+  (dosync 
+    (let [item (peek @queue-ref)]
+      (alter queue-ref pop)
+        item)))
+
+;; GET URL
+
+(defn get-url
+  "A simple get request"
+  [url]
+  (let [result (client/get url)]
+    result))
+
+;; API ideas
+
+;; (defn crawl
+;;   {:url "http://www.owainlewis.com"
+;;    :onSuccess (fn [x] (println x))})
 
 (defprotocol WebParser
   "Protocol for reading and writing web pages"
@@ -80,6 +107,7 @@
   "Extract only the page text from a url"
   [doc]
   (.text doc))
+
 (def body-text (fn [url] (get-text (get-url url))))
 
 (defn get-attr 
@@ -91,6 +119,9 @@
 
 (defmacro fetch [doc el]
   `(.select ~doc ~el))
+(defn page-title [url]
+  (fetch (reader url)
+         "title"))
 	      
 (defn get-links
   "Extract out all the links from a web page"
@@ -154,4 +185,4 @@
     (->> tokens
          (map #(.toLowerCase %))
          (filter #(< 4 (count %))))))
-        
+  
