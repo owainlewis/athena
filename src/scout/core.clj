@@ -20,17 +20,13 @@
     (let [item (peek @queue)]
       (alter queue pop)
         item ;; Return the item
-      )))
-
-;; GET URL
+        )))
 
 (defn get-url
   "A simple get request"
   [url]
   (let [result (client/get url)]
     result))
-
-;; API ideas
 
 ;; (defn crawl
 ;;   {:url "http://www.owainlewis.com"
