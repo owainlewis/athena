@@ -131,9 +131,9 @@
   [doc]
   (fetch doc "a"))
 
-(defmacro parse-attr [attr url]
-  `(map #(get-attr % ~attr)
-     (get-links (get-url ~url))))
+(defn parse-attr [attr url]
+  (map #(get-attr % attr)
+     (get-links (get-url url))))
   
 (defn get-page-hrefs
   "Collect all distinct hrefs from a web page"
