@@ -119,8 +119,9 @@
   ([node attr attr-val]
     (.attr node attr attr-val)))
 
-(defmacro fetch [doc el]
-  `(.select ~doc ~el))
+(defn fetch [doc el]
+  (.select doc el))
+
 (defn page-title [url]
   (fetch (reader url)
          "title"))
