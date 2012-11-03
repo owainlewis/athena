@@ -1,88 +1,33 @@
 # Scout
 
-A tool for mining data from web pages.
+A tool for mining data from web pages. Provides a simple wrapper over the JSoup library.
 
-TODO 
-
-Return web page info as clojure datastructures 
-
-i.e 
+## Use
 
 ```clojure
 
-(get-links "http://somepage.com")
+(use [scout.core :as scout])
 
-;; => {:links {:href "http://google.com" :anchor "click here"}}
+(def page (scout/fetch "http://www.owainlewis.com"))
 
-```
+;; Get the page title
 
-## Usage
+(:title page)
 
-```clojure
-(use 'scout.core)
-```
+;; Get the head of the document
 
-Fetching a web page is easy
+(:head page)
 
-```clojure
-(reader "http://www.google.com")
-```
+;; Get the document text only (for analysis)
 
-Once you have a web page it's easy to extract out elements from the page using fetch. 
+(:text page)
 
-Lets first define a page.
+;; We can pull out individual attributes from the page. The following example
+;; will pull out all link elements from the page and return a sequence of maps
 
-```clojure
-(defonce page (reader "http://www.owainlewis.com"))
-```
+(scout/find-nodes (:document page) "a")
 
-Now we can fetch all the links
-
-```clojure
-(fetch page "a")
-```
-
-We can fetch the head of a document
-
-```clojure
-(fetch page "head")
-```
-
-Fetch all the meta data
-
-```clojure
-(fetch page "meta")
-```
-
-Fetch the title of a document
-
-```clojure
-(fetch (get-url "http://www.owainlewis.com") "title")
-```
-
-## Selecting page text
-
-You may want to grab only the actual text from a web page for processing
-
-```clojure
-(get-text (get-url "http://www.google.com"))
-```
-
-## Demos
-
-Let's try and pull out a sequence of words from a wikipedia article and remove any words less than 4 chars in length
-
-```clojure
-(defn words->seq
-  "Pull out a map of unique words from the web page body text (useful for parsing articles)"
-  [url]
-  (let [text (body-text url)
-        tokens (clojure.string/split text #"\W+")]
-    (->> tokens
-         (map #(.toLowerCase %))
-         (filter #(< 4 (count %))))))
-
-(words->seq "http://en.wikipedia.org/wiki/Levenshtein_distance")
+;; => [{:id "home" :class "" :href "/" :anchor "click me"}]
 
 ```
 
