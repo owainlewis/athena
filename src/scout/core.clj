@@ -53,9 +53,8 @@
 
 (defn words->seq
   "Pull out a map of unique words from the web page body text (useful for parsing articles)"
-  [url]
-  (let [text (body-text url)
-        tokens (clojure.string/split text #"\W+")]
-    (->> tokens
-         (map #(.toLowerCase %))
-         (filter #(< 4 (count %))))))
+  [text]
+  (->> (clojure.string/split text #"\W+")]
+       (map #(.toLowerCase %))
+       (filter #(< 4 (count %))))))
+
