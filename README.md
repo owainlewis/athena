@@ -2,6 +2,20 @@
 
 A tool for mining data from web pages.
 
+TODO 
+
+Return web page info as clojure datastructures 
+
+i.e 
+
+```clojure
+
+(get-links "http://somepage.com")
+
+;; => {:links {:href "http://google.com" :anchor "click here"}}
+
+```
+
 ## Usage
 
 ```clojure
