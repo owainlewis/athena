@@ -5,9 +5,9 @@
   (:require [scout.document :as document]
             [scout.node :as node]))
 
-;; --------------------
-;; A queue for storing links to craw
-;; --------------------
+;; -----------------------------------
+;; A queue for storing links to crawl
+;; ----------------------------------
 
 (def link-queue (ref clojure.lang.PersistentQueue/EMPTY))
 
@@ -71,7 +71,6 @@
 
 ;; --------------------
 ;; Nodes
-
 ;; --------------------
 
 (defn to-string [v]
