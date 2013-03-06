@@ -1,5 +1,5 @@
-(ns scout.test.core
-  (:use [scout.core])
+(ns athena.test.core
+  (:use [athena.core])
   (:use [clojure.test]))
 
 (deftest to-string-test

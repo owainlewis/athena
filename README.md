@@ -1,4 +1,4 @@
-# Scout
+# Athena
 
 A tool for mining data from web pages and HTML documents.
 
@@ -11,8 +11,8 @@ Internally Scout uses the JSoup library to process HTML.
 ## A complete example
 
 ```clojure
-(ns scout.example
-  (:use [scout.core]))
+(ns athena.example
+  (:use [athena.core]))
 
 ;; In this example we want to pull in the top headlines from the New York Times
 ;; and return them as a map
@@ -50,7 +50,7 @@ Internally Scout uses the JSoup library to process HTML.
 
 ```clojure
 
-(use [scout.core])
+(use [athena.core])
 
 (def doc (get-document "http://www.owainlewis.com"))
 

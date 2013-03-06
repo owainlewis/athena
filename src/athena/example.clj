@@ -1,5 +1,5 @@
-(ns scout.example
-  (:use [scout.core]))
+(ns athena.example
+  (:use [athena.core]))
 
 ;; In this example we want to pull in the top headlines from the New York Times
 ;; and return them as a map

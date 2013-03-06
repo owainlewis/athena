@@ -1,9 +1,7 @@
-(ns scout.core
+(ns athena.core
   (:use [clojure.string :only [split]])
   (:import [org.jsoup.nodes Document Element])
-  (:require [clojure.java.io :as io])
-  (:require [scout.document :as document]
-            [scout.node :as node]))
+  (:require [clojure.java.io :as io]))
 
 ;; -----------------------------------
 ;; A queue for storing links to crawl
