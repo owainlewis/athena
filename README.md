@@ -2,11 +2,19 @@
 
 A tool for mining data from web pages and HTML documents.
 
-Scout provides an easy to use DSL for crawling HTML pages and extracting information from them.
+Athena provides an easy to use DSL for crawling HTML pages and extracting information from them.
 
 It can be used for data-mining, constructing JSON feeds from web pages and more.
 
-Internally Scout uses the JSoup library to process HTML.
+Internally Athena uses the JSoup library to process HTML.
+
+## Quick use
+
+Via Clojars
+
+```
+[athena "1.0.0-SNAPSHOT"]
+```
 
 ## A complete example
 
