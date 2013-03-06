@@ -33,12 +33,13 @@ Internally Scout uses the JSoup library to process HTML.
   []
   (map parse-story stories))
 
-{:title "Syrian Rebels Abduct 20 U.N. Soldiers in the Golan Heights Number of Syrian
-         Refugees Hits 1 Million",
- :author "By RICK GLADSTONE and ALAN COWELL",
- :summary "Syria’s civil war entangled the peacekeeping operation in the disputed
-           Golan Heights area Wednesday, when 30 armed fighters for the insurgency
-           detained a group of peacekeepers."}
+;; =>
+;; {:title "Syrian Rebels Abduct 20 U.N. Soldiers in the Golan Heights Number of Syrian
+;;         Refugees Hits 1 Million",
+;; :author "By RICK GLADSTONE and ALAN COWELL",
+;; :summary "Syria’s civil war entangled the peacekeeping operation in the disputed
+;;           Golan Heights area Wednesday, when 30 armed fighters for the insurgency
+;;           detained a group of peacekeepers."}
 
 
 ```
