@@ -25,9 +25,9 @@ Internally Scout uses the JSoup library to process HTML.
 (defn parse-story
   "Parse a story into a Clojure map"
   [story]
-  {:title (.text (node/query-selector story "a"))
-   :author (.text (node/query-selector story ".byline"))
-   :summary (.text (node/query-selector story ".summary"))})
+  {:title (node/text (node/query-selector story "a"))
+   :author (node/text (node/query-selector story ".byline"))
+   :summary (node/text (node/query-selector story ".summary"))})
 
 (defn headlines
   "Returns the latest stories from the NY Times website"
