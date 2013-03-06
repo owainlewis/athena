@@ -151,9 +151,9 @@
 (defn find-nodes
   "Find all nodes in a document matching a selector"
   [document selector]
-  (let [nodes (into [] (node/query-selector document selector))]
+  (let [nodes (into [] (query-selector document selector))]
     (map (fn [node]
-      (node/parse-element node)) nodes)))
+      (parse-element node)) nodes)))
 
 (defn words->seq
   "Pull out a map of unique words from the web page body text (useful for parsing articles)"
