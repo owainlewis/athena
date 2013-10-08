@@ -1,13 +1,13 @@
 (ns athena.core
   (:use [clojure.string :only [split]])
-  (:import [org.jsoup.nodes Document Element])
-  (:require [clojure.java.io :as io]))
+  (:import [org.jsoup.nodes Document Element]))
 
 ;; -----------------------------------
 ;; A queue for storing links to crawl
 ;; ----------------------------------
 
-(def link-queue (ref clojure.lang.PersistentQueue/EMPTY))
+(def link-queue 
+  (ref clojure.lang.PersistentQueue/EMPTY))
 
 (defn enqueue-link
   "Add a link to the queue"
@@ -38,47 +38,43 @@
   [^org.jsoup.nodes.Document doc]
   (let [t (.title doc)
         h (.head doc)
-        b (.body doc)
-        txt (.text b)]
+        b (.body doc)]
    {:title t
     :head h
-    :body b
-    :text txt}))
+    :body b}))
 
 (defn fetch [url]
-  (let [result (deconstruct (get url))]
+  (let [result (deconstruct (get-document url))]
     (merge result {:url url})))
-
-;; --------------------
-;; IO
-;; --------------------
-
-(defprotocol IO
-  "A protocol for reading and writing. Used for Scout report output"
-  (read-file [this])
-  (write-file [a b]))
-
-(extend-protocol IO
-  String
-  (read-file [file]
-    (with-open [rdr (io/reader file)]
-      (reduce conj [] (line-seq rdr))))
-  (write-file [text dest]
-    (with-open [w (io/writer dest)]
-      (.write w text))))
 
 ;; --------------------
 ;; Nodes
 ;; --------------------
 
-(defn to-string [v]
-  (if (keyword? v) (name v) v))
+(defn kw-to-string [v] (if (keyword? v) (name v) v))
 
 (defn query-selector
   "Find all matching elements in a document"
   [document element]
-  (let [q (to-string element)]
+  (let [q (kw-to-string element)]
     (.select document q)))
+
+(defn ?>> 
+  "Like query-selector but can accept multiple elements
+   allowing for nested searches"
+  [document & elements]
+  (let [el (into [] elements)]
+    (last
+      (reduce 
+      (fn [acc e]
+        (if (zero? (count acc))
+          (conj acc (query-selector document e))
+          (if-let [next ((comp first last) acc)]
+            (conj acc (query-selector next e)))))
+          [] el))))
+
+(comment
+  (?>> (fetch "http://owainlewis.com" :head :meta)))
 
 (defn get-attr
   "Extracts attributes from an element
@@ -157,6 +153,10 @@
   "Pull out a map of unique words from the web page body text (useful for parsing articles)"
   [text]
   (->> (split text #"\W+")
-       (map #(.toLowerCase %))
-       (filter #(< 4 (count %)))))
+       (map #(.toLowerCase %))))
 
+(defn multicrawl [& links]
+  (doall (map #(future (get-document %)) (into [] links))))
+
+(defn expose [crawl-result]
+  (map deref crawl-result))
