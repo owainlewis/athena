@@ -88,9 +88,14 @@
 (defn text [node] (.text node))
 
 (defn images
-  "Finds all images"
+  "Finds all images in a document"
   [document]
   (query-selector document :img))
+
+(defn image-links 
+  "Returns all the image links from a document"
+  [document]
+  (->> document images (mapcat #(get-attr % :src)) (into [])))
 
 (defn links
   "Finds all links with a href attribute"
