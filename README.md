@@ -109,9 +109,9 @@ processing web documents.
 (defn parse-story
   "Parse a story into a Clojure map"
   [story]
-  {:title (ath/text (ath/query-selector story "a"))
-   :author (ath/text (ath/query-selector story ".byline"))
-   :summary (ath/text (ath/query-selector story ".summary"))})
+  {:title (ath/text (first (ath/query-selector story "a")))
+   :author (ath/text (first (ath/query-selector story ".byline")))
+   :summary (ath/text (first (ath/query-selector story ".summary")))})
 
 (defn headlines
   "Returns the latest stories from the NY Times website"
@@ -124,8 +124,7 @@ processing web documents.
   (:title (first (headlines))))
 
 ;; (get-first-headline-from-nyt) =>
-;; "Troubled Start for Health Law Has Democrats Anxious Conservative
-;;  Group Tests New Attack on Health Law"
+;; "Troubled Start for Health Law Has Democrats Anxious
 ```
 
 ## Helper functions
