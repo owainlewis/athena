@@ -1,21 +1,23 @@
 (ns athena.example
-  (:use [athena.core]))
+  (:use [athena.core :as ath]))
 
-;; In this example we want to pull in the top headlines from the New York Times
-;; and return them as a map
+(def homepage (ath/document "http://www.nytimes.com"))
 
-(def homepage (get-document "http://www.nytimes.com"))
-
-(def stories (query-selector homepage ".story"))
+(def stories (ath/query-selector homepage ".story"))
 
 (defn parse-story
   "Parse a story into a Clojure map"
   [story]
-  {:title (text (query-selector story "a"))
-   :author (text (query-selector story ".byline"))
-   :summary (text (query-selector story ".summary"))})
+  {:title (ath/text (ath/query-selector story "a"))
+   :author (ath/text (ath/query-selector story ".byline"))
+   :summary (ath/text (ath/query-selector story ".summary"))})
 
 (defn headlines
   "Returns the latest stories from the NY Times website"
   []
   (map parse-story stories))
+
+(defn get-first-headline-from-nyt 
+  "Return the first headline from the homepage of the New York Times"
+  []
+  (:title (first (headlines))))
