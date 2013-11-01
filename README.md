@@ -13,56 +13,29 @@ Internally Athena uses the JSoup library to process HTML.
 Via Clojars
 
 ```
-[athena "1.0.0-SNAPSHOT"]
+[athena "1.0.1-SNAPSHOT"]
 ```
 
-## A complete example
+## Fetch a document
 
-```clojure
-(ns athena.example
-  (:use [athena.core]))
-
-;; In this example we want to pull in the top headlines from the New York Times
-;; and return them as a map
-
-(def homepage (get-document "http://www.nytimes.com"))
-
-(def stories (query-selector homepage ".story"))
-
-(defn parse-story
-  "Parse a story into a Clojure map"
-  [story]
-  {:title (text (query-selector story "a"))
-   :author (text (query-selector story ".byline"))
-   :summary (text (query-selector story ".summary"))})
-
-(defn headlines
-  "Returns the latest stories from the NY Times website"
-  []
-  (map parse-story stories))
-
-;; (first (headlines)) =>
-;; {:title  "Syrian Rebels Abduct 20 U.N. Soldiers in the Golan Heights Number of Syrian
-;;           Refugees Hits 1 Million",
-;; :author  "By RICK GLADSTONE and ALAN COWELL",
-;; :summary "Syria’s civil war entangled the peacekeeping operation in the disputed
-;;           Golan Heights area Wednesday, when 30 armed fighters for the insurgency
-;;           detained a group of peacekeepers."}
-
-
-```
-
-
-
-## Use
+The first thing we need to do is a parse a HTML document into a format we can manipulate.
 
 ```clojure
 
-(use [athena.core])
+;; To pass a string of HTML and convert it to a document
 
-(def doc (get-document "http://www.owainlewis.com"))
+(parse "<h1>My HTML</h1>")
+
+;; The document function takes a URL or path to a static HTML file and turns it into document
+
+;; Fetch a document from the internet
+(document "http://owainlewis.com")
+
+;; Or a static file
+(document "test/fixtures/nyt.html")
 
 ```
+
 ## Finding elements
 
 You can use query-selector to find elements quickly
@@ -96,6 +69,42 @@ You can pull out any number of elements from a node
 (get-attr image :src :width)
 ```
 
+## A complete example
+
+```clojure
+(ns athena.example
+  (:use [athena.core]))
+
+;; In this example we want to pull in the top headlines from the New York Times
+;; and return them as a map
+
+(def homepage (document "http://www.nytimes.com"))
+
+(def stories (query-selector homepage ".story"))
+
+(defn parse-story
+  "Parse a story into a Clojure map"
+  [story]
+  {:title (text (query-selector story "a"))
+   :author (text (query-selector story ".byline"))
+   :summary (text (query-selector story ".summary"))})
+
+(defn headlines
+  "Returns the latest stories from the NY Times website"
+  []
+  (map parse-story stories))
+
+;; (first (headlines)) =>
+;; {:title  "Syrian Rebels Abduct 20 U.N. Soldiers in the Golan Heights Number of Syrian
+;;           Refugees Hits 1 Million",
+;; :author  "By RICK GLADSTONE and ALAN COWELL",
+;; :summary "Syria’s civil war entangled the peacekeeping operation in the disputed
+;;           Golan Heights area Wednesday, when 30 armed fighters for the insurgency
+;;           detained a group of peacekeepers."}
+
+
+```
+
 ## Helper functions
 
 ### All images from a document
@@ -117,17 +126,6 @@ You can pull out any number of elements from a node
 
 ```clojure
 (outbound-links d)
-```
-
-## Extraction and Data Mining
-
-We can pull out individual attributes from the page. The following example
-will pull out all link elements from the page and return a sequence of maps
-
-```clojure
-
-;; TODO
-
 ```
 
 ## License

@@ -27,7 +27,7 @@
 (defn parse [html]
   (org.jsoup.Jsoup/parse html "UTF-8"))
   
-(defn read-html 
+(defn parse-html 
   "Read static HTML from disk"
   [path]
   (parse (slurp path)))
@@ -40,25 +40,20 @@
   (catch Exception e
     {:exception e})))
 
-(defn deconstruct
-  "Break a document down into core parts"
-  [^org.jsoup.nodes.Document doc]
-  (let [t (.title doc)
-        h (.head doc)
-        b (.body doc)]
-   {:title t
-    :head h
-    :body b}))
-
-(defn fetch [url]
-  (let [result (deconstruct (get-document url))]
-    (merge result {:url url})))
+(defn document 
+  "Fetch a document. If a URL is supplied, Athena will fetch it
+   before parsing"
+  [path]
+  (if (.startsWith path "http://")
+    (get-document path)
+    (parse-html path)))
 
 ;; --------------------
 ;; Nodes
 ;; --------------------
 
-(defn kw-to-string [v] (if (keyword? v) (name v) v))
+(defn kw-to-string [v] 
+  (if (keyword? v) (name v) v))
 
 (defn query-selector
   "Find all matching elements in a document"
@@ -114,6 +109,22 @@
   [document]
   (let [all (links document)]
     (map #(get-attr % :href) all)))
+
+;; Utility functions
+
+(defn deconstruct
+  "Break a document down into core parts"
+  [^org.jsoup.nodes.Document doc]
+  (let [t (.title doc)
+        h (.head doc)
+        b (.body doc)]
+   {:title t
+    :head h
+    :body b}))
+
+(defn fetch [url]
+  (let [result (deconstruct (get-document url))]
+    (merge result {:url url})))
 
 ;; --------------------
 ;; Elements parser
