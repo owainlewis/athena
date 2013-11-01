@@ -2,9 +2,7 @@
   (:use [athena.core])
   (:use [clojure.test]))
 
-(deftest to-string-test
-  (testing "should convert keywords to strings"
-    (is (= "test" (to-string :test))))
-  (testing "should retain string values"
-    (is (= "test" (to-string "test")))))
+(deftest can-parse-static-html
+  (testing "should read a file from disk"
+    (is (= "testing" 12))))
 

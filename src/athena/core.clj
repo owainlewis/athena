@@ -1,5 +1,5 @@
 (ns athena.core
-  (:use [clojure.string :only [split]])
+  (:require [clojure.string :as str])
   (:import [org.jsoup.nodes Document Element]))
 
 ;; -----------------------------------
@@ -24,14 +24,21 @@
 ;; Document parser
 ;; --------------------
 
+(defn parse [html]
+  (org.jsoup.Jsoup/parse html "UTF-8"))
+  
+(defn read-html 
+  "Read static HTML from disk"
+  [path]
+  (parse (slurp path)))
+
 (defn get-document
   "Fetch a document from the web"
   [url]
   (try
-    (let [response (org.jsoup.Jsoup/connect url)]
-      (.get response))
+    (.get (org.jsoup.Jsoup/connect url))
   (catch Exception e
-    (print e))))
+    {:exception e})))
 
 (defn deconstruct
   "Break a document down into core parts"
@@ -82,7 +89,7 @@
   [element & attrs]
   (map
     (fn [attr]
-      (let [a (to-string attr)]
+      (let [a (kw-to-string attr)]
         (.attr element a))) attrs))
 
 (defn text [node] (.text node))
@@ -157,7 +164,7 @@
 (defn words->seq
   "Pull out a map of unique words from the web page body text (useful for parsing articles)"
   [text]
-  (->> (split text #"\W+")
+  (->> (str/split text #"\W+")
        (map #(.toLowerCase %))))
 
 (defn multicrawl [& links]
