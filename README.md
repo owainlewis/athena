@@ -22,17 +22,20 @@ The first thing we need to do is a parse a HTML document into a format we can ma
 
 ```clojure
 
+(ns myns
+  (:use [athena.core :as ath]))
+
 ;; To pass a string of HTML and convert it to a document
 
-(parse "<h1>My HTML</h1>")
+(ath/parse "<h1>My HTML</h1>")
 
 ;; The document function takes a URL or path to a static HTML file and turns it into document
 
 ;; Fetch a document from the internet
-(document "http://owainlewis.com")
+(ath/document "http://owainlewis.com")
 
 ;; Or a static file
-(document "test/fixtures/nyt.html")
+(ath/document "test/fixtures/nyt.html")
 
 ```
 
@@ -44,13 +47,22 @@ You can use query-selector to find elements quickly
 
 (def page-title (query-selector doc :title))
 
+(def page-headings (query-selector doc "h1"))
+
+```
+
+Use the text function to extract text from an element
+
+```clojure
+
+(text (query-selector (parse "<h1>hello</h1>") "h1"))
 ```
 
 You can also use CSS type queries to find elements
 
 ```clojure
 
-(def page (get-document "http://owainlewis.com"))
+(def page (document "http://owainlewis.com"))
 
 (def hero-banner (query-selector page "#hero"))
 ```
@@ -60,12 +72,11 @@ You can also use CSS type queries to find elements
 You can pull out any number of elements from a node
 
 ```clojure
+
 ;; Here we want to extract the src and width attribute from an image
 
 (def document (get-document "http://www.yahoo.com"))
-
 (def image (first (images document)))
-
 (get-attr image :src :width)
 ```
 
