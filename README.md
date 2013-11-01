@@ -29,7 +29,8 @@ The first thing we need to do is a parse a HTML document into a format we can ma
 
 (ath/parse "<h1>My HTML</h1>")
 
-;; The document function takes a URL or path to a static HTML file and turns it into document
+;; The document function takes a URL or path to a static
+;; HTML file and turns it into document
 
 ;; Fetch a document from the internet
 (ath/document "http://owainlewis.com")
