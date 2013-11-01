@@ -45,9 +45,11 @@ You can use query-selector to find elements quickly
 
 ```clojure
 
-(def page-title (query-selector doc :title))
+(def doc (ath/document "http://owainlewis.com"))
 
-(def page-headings (query-selector doc "h1"))
+(def page-title (ath/query-selector doc :title))
+
+(def page-headings (ath/query-selector doc "h1"))
 
 ```
 
@@ -55,16 +57,21 @@ Use the text function to extract text from an element
 
 ```clojure
 
-(text (query-selector (parse "<h1>hello</h1>") "h1"))
+(def element
+  (ath/query-selector
+    (ath/parse "<h1>hello</h1>") "h1"))
+
+(text element) ;; => "hello"
 ```
 
 You can also use CSS type queries to find elements
 
 ```clojure
 
-(def page (document "http://owainlewis.com"))
+(def page (ath/document "http://owainlewis.com"))
 
-(def hero-banner (query-selector page "#hero"))
+(def hero-banner
+  (ath/query-selector page "#hero"))
 ```
 
 ## Fetching attributes from elements
@@ -75,9 +82,12 @@ You can pull out any number of elements from a node
 
 ;; Here we want to extract the src and width attribute from an image
 
-(def document (get-document "http://www.yahoo.com"))
-(def image (first (images document)))
-(get-attr image :src :width)
+(def document (ath/get-document "http://www.yahoo.com"))
+
+(def image (first (ath/images document)))
+
+(ath/get-attr image :src :width)
+
 ```
 
 ## A complete example
@@ -122,21 +132,23 @@ You can pull out any number of elements from a node
 
 ```clojure
 
-(def d (get-document "http://yahoo.com"))
+(def d (ath/document "http://yahoo.com"))
 
-(images d)
+(ath/images d)
 ```
 
 ### All links from a document
 
 ```clojure
-(links d)
+
+(ath/links d)
 ```
 
 ### All href values (outgoing links)
 
 ```clojure
-(outbound-links d)
+
+(ath/outbound-links d)
 ```
 
 ## License
