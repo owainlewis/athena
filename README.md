@@ -46,11 +46,11 @@ You can use query-selector to find elements quickly
 
 ```clojure
 
-(def doc (ath/document "http://owainlewis.com"))
+(def document (ath/document "http://owainlewis.com"))
 
-(def page-title (ath/query-selector doc :title))
+(def page-title (ath/query-selector document :title))
 
-(def page-headings (ath/query-selector doc "h1"))
+(def page-headings (ath/query-selector document "h1"))
 
 ```
 
