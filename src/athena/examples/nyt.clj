@@ -1,4 +1,4 @@
-(ns athena.example
+(ns athena.examples.nyt
   (:use [athena.core :as ath]))
 
 (def homepage (ath/document "http://www.nytimes.com"))
