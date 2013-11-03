@@ -179,7 +179,9 @@
        (map #(.toLowerCase %))))
 
 (defn multicrawl [& links]
-  (doall (map #(future (get-document %)) (into [] links))))
+  (doall 
+    (map #(future (get-document %)) 
+      (into [] links))))
 
 (defn expose [crawl-result]
   (map deref crawl-result))
