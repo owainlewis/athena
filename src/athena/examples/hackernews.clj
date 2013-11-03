@@ -14,5 +14,3 @@
   (let [links (->> (ath/query-selector homepage "td.title a") (map text))]
     (doseq [link links]
       (println link))))
-
-
