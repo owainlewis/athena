@@ -120,7 +120,7 @@ Extracting links is a fairly common thing you might need and so there is a helpe
 
 ;; The links function is polymorphic and will also parse links from a document
 
-(def document (ath/get-document "http://owainlewis.com"))
+(def document (ath/document "http://owainlewis.com"))
 
 (ath/links document)
 ```
