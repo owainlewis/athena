@@ -23,7 +23,7 @@ The first thing we need to do is a parse a HTML document into a format we can ma
 ```clojure
 
 (ns myns
-  (:use [athena.core :as ath]))
+  (:require [athena.core :as ath]))
 
 ;; To pass a string of HTML and convert it to a document
 
