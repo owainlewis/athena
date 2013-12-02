@@ -48,7 +48,7 @@ You can return all the text from a document or element with the text function
 
 ;; Get the entire document text
 
-(ath/text (ath/get-document "http://owainlewis.com"))
+(ath/text (ath/document "http://owainlewis.com"))
 
 ;; Get the text for a single element
 
@@ -101,7 +101,7 @@ You can pull out any number of elements from a node
 
 ;; Here we want to extract the src and width attribute from an image
 
-(def document (ath/get-document "http://www.yahoo.com"))
+(def document (ath/document "http://www.yahoo.com"))
 
 (def image (first (ath/images document)))
 
