@@ -40,6 +40,24 @@ The first thing we need to do is a parse a HTML document into a format we can ma
 
 ```
 
+## Return document text
+
+You can return all the text from a document or element with the text function
+
+```clojure
+
+;; Get the entire document text
+
+(ath/text (ath/get-document "http://owainlewis.com"))
+
+;; Get the text for a single element
+
+(def link (first (ath/links "http://owainlewis.com")))
+
+(text link) ;; => "Github"
+
+```
+
 ## Finding elements
 
 You can use query-selector to find elements quickly
@@ -89,6 +107,22 @@ You can pull out any number of elements from a node
 
 (ath/get-attr image :src :width)
 
+```
+
+## Finding links
+
+Extracting links is a fairly common thing you might need and so there is a helper for that.
+
+```clojure
+;; get all links from a web page
+
+(ath/links "http://owainlewis.com")
+
+;; The links function is polymorphic and will also parse links from a document
+
+(def document (ath/get-document "http://owainlewis.com"))
+
+(ath/links document)
 ```
 
 ## A complete example
