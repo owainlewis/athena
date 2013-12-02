@@ -80,7 +80,8 @@
 (defn get-image-links 
   "Returns all the image links from a document"
   [document]
-  (->> document images 
+  (->> document 
+       get-images 
        (mapcat #(get-attr % :src)) 
        (into [])))
 
