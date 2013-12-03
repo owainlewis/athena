@@ -116,10 +116,12 @@
 ;; Get href values from links
 
 (defn get-hrefs
-  "Returns a collection of href values for a given document"
+  "Returns a vector of href values for a given document"
   [document]
   (->> (links document)
-       (map #(get-attr % :href))))
+       (map #(get-attr % :href))
+       (mapcat identity)
+       (into [])))
 
 (def hrefs-from-url 
   (comp get-hrefs get-document))
