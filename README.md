@@ -13,7 +13,7 @@ Internally Athena uses the JSoup library to process HTML.
 Via Clojars
 
 ```
-[athena "1.0.3"]
+[athena "1.0.4"]
 ```
 
 ## Fetch a document
