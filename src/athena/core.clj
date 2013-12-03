@@ -123,6 +123,15 @@
        (mapcat identity)
        (into [])))
 
+(defn get-absolute-hrefs
+  "Same as above except it attempts to resolve absolute paths
+   which might be useful if you're writing a crawler"
+  [document]
+  (->> (links document)
+       (map #(get-attr % "abs:href"))
+       (mapcat identity)
+       (into [])))
+
 (def hrefs-from-url 
   (comp get-hrefs get-document))
 
