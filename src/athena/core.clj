@@ -2,12 +2,12 @@
   (:require [clojure.string :as str])
   (:import [org.jsoup.nodes Document Element]))
 
-(defn parse 
+(defn parse
   "Takes a raw HTML string and parses into a jSoup document"
   [^String html]
   (org.jsoup.Jsoup/parse html "UTF-8"))
-  
-(defn parse-html 
+
+(defn parse-html
   "Read static HTML from directly from a file"
   [path]
   (parse (slurp path)))
@@ -17,7 +17,7 @@
   [url]
   (.get (org.jsoup.Jsoup/connect url)))
 
-(defn document 
+(defn document
   "Fetch a document. If a URL is supplied, Athena will fetch it
    before parsing"
   [path]
@@ -29,7 +29,7 @@
 ;; Nodes
 ;; ************************************************************
 
-(defn kw-to-string [v] 
+(defn kw-to-string [v]
   (if (keyword? v) (name v) v))
 
 (defn query-selector
@@ -38,13 +38,13 @@
   (let [q (kw-to-string element)]
     (.select document q)))
 
-(defn ?>> 
+(defn ?>>
   "Like query-selector but can accept multiple elements
    allowing for nested searches"
   [document & elements]
   (let [el (into [] elements)]
     (last
-      (reduce 
+      (reduce
       (fn [acc e]
         (if (zero? (count acc))
           (conj acc (query-selector document e))
@@ -64,32 +64,44 @@
       (let [a (kw-to-string attr)]
         (.attr element a))) attrs))
 
-(defn text 
+(defn text
   "Extracts text from any node"
-  [node] 
+  [node]
   (.text node))
+
+(defn imports [doc]
+  (query-selector doc "link[href]"))
+
+(defn stylesheets [doc]
+  (query-selector doc "link[rel=stylesheet]"))
+
+(defn metadata [doc]
+  (query-selector doc "meta"))
+
+(defn data [element]
+  (.data element))
 
 ;; Document images
 ;; ************************************************************
 
 (defn get-images
   "Finds all images in a document"
-  [document]
+  [^org.jsoup.nodes.Document document]
   (query-selector document :img))
 
-(defn get-image-links 
+(defn get-image-links
   "Returns all the image links from a document"
   [document]
-  (->> document 
-       get-images 
-       (mapcat #(get-attr % :src)) 
+  (->> document
+       get-images
+       (mapcat #(get-attr % :src))
        (into [])))
 
 (defmulti images class)
 
 (defmethod images
   java.lang.String
-  [url] 
+  [url]
   (->> (document url)
         get-images))
 
@@ -109,10 +121,10 @@
   ((comp get-links get-document) url))
 
 (defmethod links
-  org.jsoup.nodes.Document 
-  [document] 
+  org.jsoup.nodes.Document
+  [document]
     (get-links document))
-       
+
 ;; Get href values from links
 
 (defn get-hrefs
@@ -132,32 +144,31 @@
        (mapcat identity)
        (into [])))
 
-(def hrefs-from-url 
+(def hrefs-from-url
   (comp get-hrefs get-document))
 
 (defmulti hrefs class)
 
-(defmethod hrefs 
-  String 
-  [url] 
+(defmethod hrefs
+  String
+  [url]
   (hrefs-from-url url))
 
-(defmethod hrefs 
-   org.jsoup.nodes.Document 
+(defmethod hrefs
+   org.jsoup.nodes.Document
   [document] (get-hrefs document))
 
 ;; Utility functions
 ;; ************************************************************
 
+(defrecord Article [title body])
+
 (defn deconstruct
   "Break a document down into core parts"
   [^org.jsoup.nodes.Document doc]
-  (let [t (.title doc)
-        h (.head doc)
-        b (.body doc)]
-   {:title t
-    :head h
-    :body b}))
+  (let [title (.title doc)
+        body (.text (.body doc))]
+  (Article. title body)))
 
 (defn fetch [url]
   (let [result (deconstruct (get-document url))]
@@ -169,7 +180,7 @@
 ;; Convert jSoup nodes to Clojure maps
 ;; ************************************************************
 
-(defmulti parse-element 
+(defmulti parse-element
   (fn [e] (.tagName e)))
 
 (defmethod parse-element "a" [e]
@@ -181,6 +192,7 @@
 
 (defmethod parse-element :default [e]
   {:id (.id e)
+   :data (.data e)
    :class (.className e)})
 
 ;; URL Processing functions
@@ -218,8 +230,8 @@
        (map #(.toLowerCase %))))
 
 (defn multicrawl [& links]
-  (doall 
-    (map #(future (get-document %)) 
+  (doall
+    (map #(future (get-document %))
       (into [] links))))
 
 (defn expose [crawl-result]
@@ -229,7 +241,7 @@
 ;; A queue for storing links to crawl
 ;; ************************************************************
 
-(def link-queue 
+(def link-queue
   (ref clojure.lang.PersistentQueue/EMPTY))
 
 (defn enqueue-link
