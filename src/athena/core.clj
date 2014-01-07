@@ -64,7 +64,7 @@
       (let [a (kw-to-string attr)]
         (.attr element a))) attrs))
 
-(def attr (comp first ath/get-attr))
+(def attr (comp first get-attr))
 
 (defn text
   "Extracts text from any node"
