@@ -68,8 +68,18 @@
 
 (defn text
   "Extracts text from any node"
-  [node]
-  (.text node))
+  [element]
+  (.text element))
+
+(defn outer-html
+  "Extracts the outer HTML from an element
+  [element]
+  (.outerHtml element))
+
+(defn html
+  "Extract the HTML from an element"
+  [element]
+  (.html element))
 
 (defn imports [doc]
   (query-selector doc "link[href]"))
