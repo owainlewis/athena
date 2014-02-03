@@ -72,7 +72,7 @@
   (.text element))
 
 (defn outer-html
-  "Extracts the outer HTML from an element
+  "Extracts the outer HTML from an element"
   [element]
   (.outerHtml element))
 
