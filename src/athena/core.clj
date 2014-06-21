@@ -83,24 +83,25 @@
 (comment
   (?>> (fetch "http://owainlewis.com" :head :meta)))
 
-(defn get-attr
+(defn attr
+  "Extract an attribute from an element i.e :href :src etc"
+  [element]
+  (.attr element (name element)))
+
+(defn get-attrs
   "Extracts attributes from an element
    can pull out multiple attributes"
   [element & attrs]
-  (map
-    (fn [attr]
-      (let [a (name attr)]
-        (.attr element a))) attrs))
+  (map get-attr (into [] attrs)))
 
 ;; Composition functions
 ;; ************************************************************
 
-(def first-selector (comp first query-selector))
+(def first-selector
+  "Gets only the first matching element"
+  (comp first query-selector))
 
-(def attr (comp first get-attr))
-
-(defn absolute-url [link]
-  (.absUrl link "href"))
+(def first-text "Find the text inside the first matching element" (comp text first-selector))
 
 ;; General extraction utils
 
@@ -148,3 +149,8 @@
   "Data attributes"
   [element]
     (.data element))
+
+;; TODO !!!
+
+(defn absolute-url [link]
+  (.absUrl link "href"))
