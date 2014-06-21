@@ -3,9 +3,7 @@
 
 (def fb-eng "https://en-gb.facebook.com/careers/teams/engineering")
 
-(def page (http-get fb-eng))
-
-(def doc (parse-string page))
+(def doc (->> fb-eng http-get parse-string))
 
 (defn jobs []
   (lazy-seq (query-selector doc ".careersPositionGroup li")))
