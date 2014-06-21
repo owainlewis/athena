@@ -20,8 +20,8 @@
 (defn parse-job
   "Returns a job"
   [element]
-  (let [atag (first-selector element :a)
-        location (text (first-selector element ".fcg"))
+  (let [atag      (first-selector element :a)
+        location  (first-text element ".fcg")
         link-href (attr atag :href)
         link-text (text atag)
         full-link (str "https://en-gb.facebook.com" link-href)]
