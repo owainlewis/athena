@@ -29,3 +29,11 @@
    :link  full-link
    :description (parse-job-detail full-link)
    :location (normalize-location location)}))
+
+(defn run-crawler
+  "Run all job searches returning a list of facebook engineering jobs"
+  []
+  (let [futures
+          (doall
+            (map #(future (parse-job %)) (jobs)))]
+  (map deref futures)))

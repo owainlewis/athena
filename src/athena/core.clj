@@ -85,8 +85,8 @@
 
 (defn attr
   "Extract an attribute from an element i.e :href :src etc"
-  [element]
-  (.attr element (name element)))
+  [element attr]
+  (.attr element (name attr)))
 
 (defn get-attrs
   "Extracts attributes from an element
