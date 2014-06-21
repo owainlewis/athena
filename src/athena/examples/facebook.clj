@@ -15,7 +15,7 @@
   (try
     (let [document (parse-string (http-get href))]
       (text (first-selector document ".mvl .mbl")))
-  (catch Exception e (.getMessage e))))
+  (catch Exception e "")))
 
 (defn parse-job
   "Returns a job"
