@@ -13,7 +13,7 @@
 
 (defn parse-job-detail [href]
   (try
-    (let [document (parse-string (http-get href))]
+    (let [document (->> href http-get parse-string)]
       (text (first-selector document ".mvl .mbl")))
   (catch Exception e "")))
 
