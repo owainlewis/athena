@@ -84,6 +84,64 @@ This is a full example of how you might use this library to turn unstructured we
 
 ```
 
+## Advanced
+
+This is a more complex example that involves fetching data from multiple pages
+to produce the result
+
+We will parse job adverts from multiple pages of Facebook.com
+
+```
+{:title "Data Scientist, Economics Research",
+ :link "https://en-gb.facebook.com/careers/department?dept=engineering&req=a0IA000000CzAekMAF",
+ :description "Facebook was built to help people connect and share, and over the last decade our
+               tools have played a critical part in changing how people around the world communicate
+			   with one another.
+			   With over a billion people using the service and more than fifty offices around the globe,
+		       a career at Facebook offers countless ways to make an
+			   impact in a fast growing organization.",
+  :location "Menlo Park"}
+
+```
+
+```clojure
+(ns athena.examples.facebook
+  (:require [athena.core :refer :all]))
+
+(def fb-eng "https://en-gb.facebook.com/careers/teams/engineering")
+
+(def page (http-get fb-eng))
+
+(def doc (parse-string page))
+
+(defn jobs []
+  (lazy-seq (query-selector doc ".careersPositionGroup li")))
+
+(defn normalize-location [location]
+  (clojure.string/replace location #"[(]|[)]" ""))
+
+(defn parse-job-detail [href]
+  (try
+    (let [document (parse-string (http-get href))]
+      (text (first-selector document ".mvl .mbl")))
+  (catch Exception e (.getMessage e))))
+
+(defn parse-job
+  "Returns a job"
+  [element]
+  (let [atag (first-selector element :a)
+        location (text (first-selector element ".fcg"))
+        link-href (attr atag :href)
+        link-text (text atag)
+        full-link (str "https://en-gb.facebook.com" link-href)]
+  {:title link-text
+   :link  full-link
+   :description (parse-job-detail full-link)
+   :location (normalize-location location)}))
+
+
+```
+
 ## License
 
 Distributed under the Eclipse Public License, the same as Clojure.

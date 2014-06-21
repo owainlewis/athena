@@ -99,6 +99,9 @@
 
 (def attr (comp first get-attr))
 
+(defn absolute-url [link]
+  (.absUrl link "href"))
+
 ;; General extraction utils
 
 (defn text
