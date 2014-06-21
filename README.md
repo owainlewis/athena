@@ -110,8 +110,6 @@ We will parse job adverts from multiple pages of Facebook.com
 
 (def fb-eng "https://en-gb.facebook.com/careers/teams/engineering")
 
-;; Fetch the first reference document which lists all jobs
-
 (def doc (->> fb-eng http-get parse-string))
 
 (defn jobs []
@@ -122,15 +120,15 @@ We will parse job adverts from multiple pages of Facebook.com
 
 (defn parse-job-detail [href]
   (try
-    (let [document (parse-string (http-get href))]
+    (let [document (->> href http-get parse-string)]
       (text (first-selector document ".mvl .mbl")))
-  (catch Exception e (.getMessage e))))
+  (catch Exception e "")))
 
 (defn parse-job
   "Returns a job"
   [element]
-  (let [atag (first-selector element :a)
-        location (text (first-selector element ".fcg"))
+  (let [atag      (first-selector element :a)
+        location  (first-text element ".fcg")
         link-href (attr atag :href)
         link-text (text atag)
         full-link (str "https://en-gb.facebook.com" link-href)]
