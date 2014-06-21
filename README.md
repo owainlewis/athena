@@ -16,6 +16,14 @@ Via Clojars
 [athena "1.0.4"]
 ```
 
+## Quick example
+
+Find the text of the first link element on my portfolio
+
+```clojure
+(text (first-selector (parse-string (http-get "http://owainlewis.com")) :a))
+```
+
 ## Fetch a document
 
 The first thing we need to do is a parse a HTML document into a format we can manipulate.
@@ -152,7 +160,7 @@ processing web documents.
   []
   (map parse-story stories))
 
-(defn get-first-headline-from-nyt 
+(defn get-first-headline-from-nyt
   "Return the first headline from the homepage of the New York Times"
   []
   (:title (first (headlines))))
@@ -173,7 +181,7 @@ processing web documents.
 
 (def homepage (ath/document "test/fixtures/hacker.html"))
 
-(defn homepage-links 
+(defn homepage-links
   "Prints out all the links from the homepage of hacker news
    (which is saved locally as a HTML file)"
   []

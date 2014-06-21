@@ -1,42 +1,70 @@
 (ns athena.core
-  (:require [clojure.string :as str])
-  (:import [org.jsoup.nodes Document Element]))
+  (:require [clojure.string :as str]
+            [clojure.core.async :refer [chan]]
+            [org.httpkit.client :as http])
+  (:import [org.jsoup.nodes Document Element]
+           [java.net URL]))
 
-(defn parse
-  "Takes a raw HTML string and parses into a jSoup document"
+(defn parse-string
+  "Takes a raw HTML string and convert into a jSoup document"
   [^String html]
-  (org.jsoup.Jsoup/parse html "UTF-8"))
+  (let [encoding "UTF-8"]
+    (org.jsoup.Jsoup/parse html encoding)))
 
-(defn parse-html
+(defn parse-file
   "Read static HTML from directly from a file"
   [path]
-  (parse (slurp path)))
+  ((comp parse-string slurp) path))
 
-(defn get-document
-  "Fetch a document from the web"
+(defn url-like?
+  "Weak checking for probable URL strings"
+  [url]
+  (.startsWith url "http://"))
+
+(defn jsoup-get-document
+  "Given a URL fetch a document from the web and return a document"
   [url]
   (.get (org.jsoup.Jsoup/connect url)))
+
+(defn http-get [url]
+  (let [{:keys [_ _ body e] :as resp}
+    @(http/get url)]
+  (when (nil? e)
+    body)))
+
+(defn get-document
+  "Make a HTTP request, parse a document and return it"
+  [url]
+  (let [{:keys [_ _ body e] :as resp} @(http/get url)]
+    (when (nil? e)
+      (parse-string body))))
+
+(defn get-document-async
+  "Fetch the document asynchronously"
+  ([url callback-fn]
+    (let [options {:timeout 200}]
+      (http/get url options
+        (fn [{:keys [status headers body error]}]
+          (when-not error
+            (let [document (parse-string body)]
+              (callback-fn document))))))))
 
 (defn document
   "Fetch a document. If a URL is supplied, Athena will fetch it
    before parsing"
   [path]
-  (if (.startsWith path "http://")
+  (if (url-like? path)
     (get-document path)
-    (parse-html path)))
+    (parse-file path)))
 
 ;; ************************************************************
 ;; Nodes
 ;; ************************************************************
 
-(defn kw-to-string [v]
-  (if (keyword? v) (name v) v))
-
 (defn query-selector
   "Find all matching elements in a document"
   [document element]
-  (let [q (kw-to-string element)]
-    (.select document q)))
+  (.select document (name element)))
 
 (defn ?>>
   "Like query-selector but can accept multiple elements
@@ -45,12 +73,12 @@
   (let [el (into [] elements)]
     (last
       (reduce
-      (fn [acc e]
-        (if (zero? (count acc))
-          (conj acc (query-selector document e))
-          (if-let [next ((comp first last) acc)]
-            (conj acc (query-selector next e)))))
-          [] el))))
+        (fn [acc e]
+          (if (zero? (count acc))
+            (conj acc (query-selector document e))
+              (if-let [next ((comp first last) acc)]
+                (conj acc (query-selector next e)))))
+                  [] el))))
 
 (comment
   (?>> (fetch "http://owainlewis.com" :head :meta)))
@@ -61,10 +89,17 @@
   [element & attrs]
   (map
     (fn [attr]
-      (let [a (kw-to-string attr)]
+      (let [a (name attr)]
         (.attr element a))) attrs))
 
+;; Composition functions
+;; ************************************************************
+
+(def first-selector (comp first query-selector))
+
 (def attr (comp first get-attr))
+
+;; General extraction utils
 
 (defn text
   "Extracts text from any node"
@@ -81,190 +116,32 @@
   [element]
   (.html element))
 
-(defn imports [doc]
+(defn outbound-links
+  "Returns all links with a href value set"
+  [doc]
   (query-selector doc "link[href]"))
 
-(defn stylesheets [doc]
+(defn stylesheets
+  "Extract the stylesheets from a document"
+  [doc]
   (query-selector doc "link[rel=stylesheet]"))
 
-(defn metadata [doc]
-  (query-selector doc "meta"))
+(defn scripts
+  "Extract script elements from a page"
+  [doc]
+  (query-selector doc :script))
 
-(defn data [element]
-  (.data element))
+(defn title
+  "Returns the document title"
+  [doc]
+    (.title doc))
 
-;; Document images
-;; ************************************************************
+(defn metadata
+  "Extract meta data from a document"
+  [doc]
+    (query-selector doc :meta))
 
-(defn get-images
-  "Finds all images in a document"
-  [^org.jsoup.nodes.Document document]
-  (query-selector document :img))
-
-(defn get-image-links
-  "Returns all the image links from a document"
-  [document]
-  (->> document
-       get-images
-       (mapcat #(get-attr % :src))
-       (into [])))
-
-(defmulti images class)
-
-(defmethod images
-  java.lang.String
-  [url]
-  (->> (document url)
-        get-images))
-
-;; Document links
-;; ************************************************************
-
-(defn get-links
-  "Finds all links"
-  [document]
-  (query-selector document "a"))
-
-(defmulti links class)
-
-(defmethod links
-  java.lang.String
-  [url]
-  ((comp get-links get-document) url))
-
-(defmethod links
-  org.jsoup.nodes.Document
-  [document]
-    (get-links document))
-
-;; Get href values from links
-
-(defn get-hrefs
-  "Returns a vector of href values for a given document"
-  [document]
-  (->> (links document)
-       (map #(get-attr % :href))
-       (mapcat identity)
-       (into [])))
-
-(defn get-absolute-hrefs
-  "Same as above except it attempts to resolve absolute paths
-   which might be useful if you're writing a crawler"
-  [document]
-  (->> (links document)
-       (map #(get-attr % "abs:href"))
-       (mapcat identity)
-       (into [])))
-
-(def hrefs-from-url
-  (comp get-hrefs get-document))
-
-(defmulti hrefs class)
-
-(defmethod hrefs
-  String
-  [url]
-  (hrefs-from-url url))
-
-(defmethod hrefs
-   org.jsoup.nodes.Document
-  [document] (get-hrefs document))
-
-;; Utility functions
-;; ************************************************************
-
-(defrecord Article [title body])
-
-(defn deconstruct
-  "Break a document down into core parts"
-  [^org.jsoup.nodes.Document doc]
-  (let [title (.title doc)
-        body (.text (.body doc))]
-  (Article. title body)))
-
-(defn fetch [url]
-  (let [result (deconstruct (get-document url))]
-    (merge result {:url url})))
-
-;; ************************************************************
-;; Elements parser
-;;
-;; Convert jSoup nodes to Clojure maps
-;; ************************************************************
-
-(defmulti parse-element
-  (fn [e] (.tagName e)))
-
-(defmethod parse-element "a" [e]
-  {:type :link
-   :id (.id e)
-   :href (.attr e "href")
-   :class (.className e)
-   :anchor (.ownText e)})
-
-(defmethod parse-element :default [e]
-  {:id (.id e)
-   :data (.data e)
-   :class (.className e)})
-
-;; URL Processing functions
-;; ************************************************************
-
-(defn parse-full-url
-  "Trys to convert a partial to a full url. This needs to be more robust
-   as we will need to deal with lots of strange url cases i.e params
-   strange extensions etc."
-  ([url]
-     (if (.startsWith url "www")
-       (str "http://" url)
-       url))
-  ([url host]
-  (let [protocol "http://"]
-  (cond (.startsWith url "/") (str host url)
-        (.startsWith url "www") (str protocol url)
-        :default host))))
-
-;; ************************************************************
-;; General Utils
-;; ************************************************************
-
-(defn find-nodes
-  "Find all nodes in a document matching a selector"
-  [document selector]
-  (let [nodes (into [] (query-selector document selector))]
-    (map (fn [node]
-      (parse-element node)) nodes)))
-
-(defn words->seq
-  "Pull out a map of unique words from the web page body text (useful for parsing articles)"
-  [text]
-  (->> (str/split text #"\W+")
-       (map #(.toLowerCase %))))
-
-(defn multicrawl [& links]
-  (doall
-    (map #(future (get-document %))
-      (into [] links))))
-
-(defn expose [crawl-result]
-  (map deref crawl-result))
-
-;; ************************************************************
-;; A queue for storing links to crawl
-;; ************************************************************
-
-(def link-queue
-  (ref clojure.lang.PersistentQueue/EMPTY))
-
-(defn enqueue-link
-  "Add a link to the queue"
-  [link]
-  (dosync
-    (alter link-queue conj link)))
-
-(defn pop-link [queue]
-  (dosync
-    (let [item (peek @queue)]
-      (alter queue pop) item)))
-
-;; ************************************************************
+(defn data
+  "Data attributes"
+  [element]
+    (.data element))
