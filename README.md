@@ -25,10 +25,10 @@ Find all the inner text from the links on my portfolio
   (:require [athena.core :refer :all]))
 
 ;; Get a document
-(def document (parse-string (http-get "http://owainlewis.com")))
+(def doc (parse-string (http-get "http://owainlewis.com")))
 
 ;; Extract all the links from the page
-(def links (query-selector document :a))
+(def links (query-selector doc :a))
 
 ;; Map over and get the inner text
 (map text links)
