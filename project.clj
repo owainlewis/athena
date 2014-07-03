@@ -1,4 +1,4 @@
-(defproject athena "1.0.5"
+(defproject athena "1.0.6"
   :description "A web crawler written in Clojure"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [http-kit "2.1.16"]
