@@ -92,7 +92,7 @@
   "Extracts attributes from an element
    can pull out multiple attributes"
   [element & attrs]
-  (map get-attr (into [] attrs)))
+  (map attr (into [] attrs)))
 
 ;; Composition functions
 ;; ************************************************************
@@ -101,14 +101,14 @@
   "Gets only the first matching element"
   (comp first query-selector))
 
-(def first-text "Find the text inside the first matching element" (comp text first-selector))
-
 ;; General extraction utils
 
 (defn text
   "Extracts text from any node"
   [element]
   (.text element))
+
+(def first-text "Find the text inside the first matching element" (comp text first-selector))
 
 (defn outer-html
   "Extracts the outer HTML from an element"
