@@ -64,7 +64,8 @@
 (defn query-selector
   "Find all matching elements in a document"
   [document element]
-  (.select document (name element)))
+  (.select document 
+    (name element)))
 
 (defn ?>>
   "Like query-selector but can accept multiple elements
@@ -86,13 +87,15 @@
 (defn attr
   "Extract an attribute from an element i.e :href :src etc"
   [element attr]
-  (.attr element (name attr)))
+  (.attr element 
+    (name attr)))
 
 (defn get-attrs
   "Extracts attributes from an element
    can pull out multiple attributes"
   [element & attrs]
-  (map attr (into [] attrs)))
+  (map attr 
+    (into [] attrs)))
 
 ;; Composition functions
 ;; ************************************************************
