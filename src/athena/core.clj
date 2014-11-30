@@ -19,7 +19,8 @@
 (defn url-like?
   "Weak checking for probable URL strings"
   [url]
-  (.startsWith url "http://"))
+  (or (.startsWith url "https://") 
+      (.startsWith url "http://")))
 
 (defn jsoup-get-document
   "Given a URL fetch a document from the web and return a document"
