@@ -17,7 +17,7 @@
   ((comp parse-string slurp) path))
 
 (defn url-like?
-  "Weak checking for probable URL strings"
+  "Weak checking for URL strings"
   [url]
   (or (.startsWith url "https://") 
       (.startsWith url "http://")))
