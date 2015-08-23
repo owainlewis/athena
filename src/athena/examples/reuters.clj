@@ -25,7 +25,12 @@
       (let [qpercentage (->> (ath/query-selector document ".dataParenthetical.changeDown")
                              first
                              ath/text) ]
-        (Quote. qprice qchange (clojure.string/replace qpercentage #"[()]" "") qopen qclose)))))
+        (Quote. qprice q
+                change 
+                (clojure.string/replace qpercentage #"[()]" "") 
+                qopen 
+                qclose)))))
+      
 (defn dow []
    (quote-for "DJI"))
 
