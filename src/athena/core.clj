@@ -58,10 +58,6 @@
     (get-document path)
     (parse-file path)))
 
-;; ************************************************************
-;; Nodes
-;; ************************************************************
-
 (defn query-selector
   "Find all matching elements in a document"
   [document element]
@@ -98,14 +94,9 @@
   (map attr 
     (into [] attrs)))
 
-;; Composition functions
-;; ************************************************************
-
 (def first-selector
   "Gets only the first matching element"
   (comp first query-selector))
-
-;; General extraction utils
 
 (defn text
   "Extracts text from any node"
@@ -153,8 +144,6 @@
   "Data attributes"
   [element]
     (.data element))
-
-;; TODO !!!
 
 (defn absolute-url [link]
   (.absUrl link "href"))
